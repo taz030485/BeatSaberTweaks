@@ -63,7 +63,7 @@ namespace BeatSaberTweaks
 
         public static string SettingsPath()
         {
-            return Path.Combine(Environment.CurrentDirectory, "Tweask.cfg");
+            return Path.Combine(Environment.CurrentDirectory, "Tweaks.cfg");
         }
 
         public static void Load()
