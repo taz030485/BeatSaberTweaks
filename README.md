@@ -4,8 +4,12 @@ In game clock
 Moveable energy bar  
 Change volume of note hits and misses  
 Change volume of menu background music  
+Toggle third person camera (If CameraPlus is installed)
 
 # Changes
+2.0  
+New tweaks settings UI with most options available
+
 1.0  
 Initial release 
 
@@ -20,5 +24,4 @@ Initial release
 4. Done! You've installed the BeatSaberTweaks Plugin.
 
 # Usage
-Adjust note hit and miss volume in the normal settings window.  
-The rest are changed by editing Tweaks.cfg (Run Beat Saber once it create the file first)
+Turn anything on or off in the Tweaks menu.

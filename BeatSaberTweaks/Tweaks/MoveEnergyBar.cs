@@ -35,9 +35,6 @@ namespace BeatSaberTweaks
             if (Settings.MoveEnergyBar && scene.buildIndex == 4)
             {
                 var energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().FirstOrDefault();
-
-                Console.WriteLine(energyPanel.transform.position);
-
                 var pos = energyPanel.transform.position;
                 pos.y = Settings.EnergyBarHeight;
                 energyPanel.transform.position = pos;

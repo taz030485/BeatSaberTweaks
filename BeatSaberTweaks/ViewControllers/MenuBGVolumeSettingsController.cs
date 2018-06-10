@@ -34,11 +34,13 @@ namespace BeatSaberTweaks
 
         protected override void ApplyValue(int idx)
         {
-            Settings.MenuBGVolume = this._volumes[idx];
+
         }
 
         protected override string TextForValue(int idx)
         {
+            Settings.MenuBGVolume = this._volumes[idx];
+            MenuBGVolume.UpdateBGVolume();
             return string.Format("{0:0.0}", this._volumes[idx]);
         }
     }

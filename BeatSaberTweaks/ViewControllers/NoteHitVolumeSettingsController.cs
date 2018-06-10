@@ -35,6 +35,7 @@ namespace BeatSaberTweaks
         protected override void ApplyValue(int idx)
         {
             Settings.NoteHitVolume = this._volumes[idx];
+            NoteHitVolume.UpdateVolumes();
         }
 
         protected override string TextForValue(int idx)

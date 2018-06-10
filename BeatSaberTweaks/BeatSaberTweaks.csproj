@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BeatSaberTweaks</RootNamespace>
     <AssemblyName>BeatSaberTweaks</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +35,10 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CameraPlus">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\CameraPlus.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="IllusionInjector">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionInjector.dll</HintPath>
       <Private>False</Private>
@@ -46,9 +51,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="TextMeshPro-1.0.55.2017.1.0b12">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\TextMeshPro-1.0.55.2017.1.0b12.dll</HintPath>
@@ -86,7 +89,7 @@
   <ItemGroup>
     <Compile Include="Tweaks\MenuBGVolume.cs" />
     <Compile Include="ViewControllers\MenuBGVolumeSettingsController.cs" />
-    <Compile Include="ViewControllers\TestView.cs" />
+    <Compile Include="ViewControllers\CameraPlusThirdPersonSettingsController.cs" />
     <Compile Include="ViewControllers\Use24hrClockSettingsController.cs" />
     <Compile Include="ViewControllers\ShowClockSettingsController.cs" />
     <Compile Include="ViewControllers\NoteHitVolumeSettingsController.cs" />

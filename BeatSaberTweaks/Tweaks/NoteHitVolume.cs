@@ -16,8 +16,8 @@ namespace BeatSaberTweaks
         public static NoteHitVolume Instance;
         private static NoteCutSoundEffect noteCutSoundEffect;
 
-        float normalVolume = 0;
-        float normalMissVolume = 0;
+        static float normalVolume = 0;
+        static float normalMissVolume = 0;
 
         public static void OnLoad(Transform parent)
         {
@@ -36,6 +36,17 @@ namespace BeatSaberTweaks
             else
             {
                 Destroy(this);
+            }
+        }
+
+        public static void UpdateVolumes()
+        {
+            if (noteCutSoundEffect != null)
+            {
+                float newGoodVolume = normalVolume * Settings.NoteHitVolume;
+                float newBadVolume = normalMissVolume * Settings.NoteMissVolume;
+                ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_goodCutVolume", newGoodVolume);
+                ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_badCutVolume", newBadVolume);
             }
         }
 

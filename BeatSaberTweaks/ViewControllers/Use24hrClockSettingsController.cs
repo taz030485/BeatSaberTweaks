@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BeatSaberTweaks
 {
@@ -15,11 +14,12 @@ namespace BeatSaberTweaks
 
         protected override void ApplyValue(bool value)
         {
-            Settings.Use24hrClock = value;
+            
         }
 
         protected override string TextForValue(bool value)
         {
+            Settings.Use24hrClock = value;
             return (!value) ? "OFF" : "ON";
         }
     }

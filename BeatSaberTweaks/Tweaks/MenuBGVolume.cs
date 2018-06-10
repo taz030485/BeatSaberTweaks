@@ -15,7 +15,8 @@ namespace BeatSaberTweaks
     {
         public static MenuBGVolume Instance;
 
-        float normalVolume = 0;
+        static float normalVolume = 0;
+        static SongPreviewPlayer player = null;
 
         public static void OnLoad(Transform parent)
         {
@@ -37,18 +38,30 @@ namespace BeatSaberTweaks
             }
         }
 
+        public static void UpdateBGVolume()
+        {
+            if (player != null && SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                float newVolume = normalVolume * Settings.MenuBGVolume;
+                ReflectionUtil.SetPrivateField(player, "_ambientVolumeScale", newVolume);
+                player.CrossfadeTo(ReflectionUtil.GetPrivateField<AudioClip>(player, "_defaultAudioClip"), 0f, -1f, newVolume);
+            }
+        }
+
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
             if (scene.buildIndex == 1)
             {
-                var songPreviewPlayer = Resources.FindObjectsOfTypeAll<SongPreviewPlayer>().FirstOrDefault();
+                player = Resources.FindObjectsOfTypeAll<SongPreviewPlayer>().FirstOrDefault();
                 if (normalVolume == 0)
                 {
-                    normalVolume = ReflectionUtil.GetPrivateField<float>(songPreviewPlayer, "_ambientVolumeScale");
+                    normalVolume = ReflectionUtil.GetPrivateField<float>(player, "_ambientVolumeScale");
                 }
-                float newVolume = normalVolume * Settings.MenuBGVolume;
-                ReflectionUtil.SetPrivateField(songPreviewPlayer, "_ambientVolumeScale", newVolume);
-                songPreviewPlayer.CrossfadeTo(ReflectionUtil.GetPrivateField<AudioClip>(songPreviewPlayer,"_defaultAudioClip"), 0f, -1f, newVolume);
+                UpdateBGVolume();
+            }
+            else
+            {
+                player = null;
             }
         }
     }
