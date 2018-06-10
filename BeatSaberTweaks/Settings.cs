@@ -63,13 +63,22 @@ namespace BeatSaberTweaks
 
         public static string SettingsPath()
         {
-            return Path.Combine(Environment.CurrentDirectory, "Tweask.cfg");
+            return Path.Combine(Environment.CurrentDirectory, "Tweaks.cfg");
         }
 
         public static void Load()
         {
-            string filePath = SettingsPath();
+            // I'm a dumbass and spelled the filename wrong
+            string oldPath = Path.Combine(Environment.CurrentDirectory, "Tweask.cfg");
+            if (File.Exists(oldPath))
+            {
+                string dataAsJson = File.ReadAllText(oldPath);
+                instance = JsonUtility.FromJson<Settings>(dataAsJson);
+                File.Delete(oldPath);
+                return;
+            }
 
+            string filePath = SettingsPath();
             if (File.Exists(filePath))
             {
                 string dataAsJson = File.ReadAllText(filePath);

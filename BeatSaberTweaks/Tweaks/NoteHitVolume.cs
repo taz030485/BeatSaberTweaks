@@ -41,41 +41,7 @@ namespace BeatSaberTweaks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == 1)
-            {
-                var volumeSettings = Resources.FindObjectsOfTypeAll<VolumeSettingsController>().FirstOrDefault();
-                volumeSettings.gameObject.SetActive(false);
-
-                var SettingsObject = Object.Instantiate(volumeSettings.gameObject,volumeSettings.transform.parent);
-                SettingsObject.SetActive(false);
-                SettingsObject.name = "Note Hit Volume";
-
-                var SettingsMissObject = Object.Instantiate(volumeSettings.gameObject, volumeSettings.transform.parent);
-                SettingsMissObject.SetActive(false);
-                SettingsMissObject.name = "Note Miss Volume";
-
-                volumeSettings.gameObject.SetActive(true);
-
-                var volume = SettingsObject.GetComponent<VolumeSettingsController>();
-                ReflectionUtil.CopyComponent(volume, typeof(SimpleSettingsController), typeof(HitVolumeSettingsController), SettingsObject);
-                Object.DestroyImmediate(volume);
-
-                var missVolume = SettingsMissObject.GetComponent<VolumeSettingsController>();
-                ReflectionUtil.CopyComponent(missVolume, typeof(SimpleSettingsController), typeof(MissVolumeSettingsController), SettingsMissObject);
-                Object.DestroyImmediate(missVolume);
-
-                SettingsObject.GetComponentInChildren<TMP_Text>().text = "Note Hit Volume";
-                SettingsObject.SetActive(true);
-                SettingsObject.GetComponent<HitVolumeSettingsController>().Init();
-
-                SettingsMissObject.GetComponentInChildren<TMP_Text>().text = "Note Miss Volume";
-                SettingsMissObject.SetActive(true);
-                SettingsMissObject.GetComponent<MissVolumeSettingsController>().Init();
-
-                SetRectYPos(volumeSettings.transform.parent.GetComponent<RectTransform>(), 12);
-                SetRectYPos(volumeSettings.transform.parent.parent.Find("Title").GetComponent<RectTransform>(), -2);
-            }
-            else
+            if (scene.buildIndex == 4)
             {
                 bool pooled = false;
                 if (noteCutSoundEffect == null)
@@ -109,13 +75,6 @@ namespace BeatSaberTweaks
                     }
                 }
             }
-        }
-
-        void SetRectYPos(RectTransform rect, float y)
-        {
-            var pos = rect.anchoredPosition;
-            pos.y = y;
-            rect.anchoredPosition = pos;
         }
     }
 }

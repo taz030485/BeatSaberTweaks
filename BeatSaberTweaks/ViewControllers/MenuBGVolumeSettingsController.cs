@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 namespace BeatSaberTweaks
 {
-	public class MissVolumeSettingsController : ListSettingsController
+	public class MenuBGVolumeSettingsController : ListSettingsController
 	{
+        protected float[] _volumes;
+
         protected override void GetInitValues(out int idx, out int numberOfElements)
         {
             float num = 0.1f;
@@ -18,7 +20,7 @@ namespace BeatSaberTweaks
             {
                 this._volumes[i] = num2 + num * (float)i;
             }
-            float volume = Settings.NoteMissVolume;
+            float volume = Settings.MenuBGVolume;
             idx = numberOfElements - 1;
             for (int j = 0; j < this._volumes.Length; j++)
             {
@@ -32,15 +34,12 @@ namespace BeatSaberTweaks
 
         protected override void ApplyValue(int idx)
         {
-            
+            Settings.MenuBGVolume = this._volumes[idx];
         }
 
         protected override string TextForValue(int idx)
         {
-            Settings.NoteMissVolume = this._volumes[idx];
             return string.Format("{0:0.0}", this._volumes[idx]);
         }
-
-        protected float[] _volumes;
     }
 }

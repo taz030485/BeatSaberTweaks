@@ -85,9 +85,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Tweaks\MenuBGVolume.cs" />
-    <Compile Include="ViewControllers\HitVolumeSettingsController.cs" />
+    <Compile Include="ViewControllers\MenuBGVolumeSettingsController.cs" />
+    <Compile Include="ViewControllers\TestView.cs" />
+    <Compile Include="ViewControllers\Use24hrClockSettingsController.cs" />
+    <Compile Include="ViewControllers\ShowClockSettingsController.cs" />
+    <Compile Include="ViewControllers\NoteHitVolumeSettingsController.cs" />
     <Compile Include="Tweaks\InGameClock.cs" />
-    <Compile Include="ViewControllers\MissVolumeSettingsController.cs" />
+    <Compile Include="ViewControllers\NoteMissVolumeSettingsController.cs" />
     <Compile Include="Tweaks\MoveEnergyBar.cs" />
     <Compile Include="Tweaks\NoteHitVolume.cs" />
     <Compile Include="Plugin.cs" />
@@ -95,6 +99,8 @@
     <Compile Include="Utilites\ReflectionUtil.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TweakManager.cs" />
+    <Compile Include="ViewControllers\MoveEnergyBarSettingsController.cs" />
+    <Compile Include="ViewControllers\TweakSettingsViewController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

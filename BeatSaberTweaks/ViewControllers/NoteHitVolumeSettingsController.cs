@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 namespace BeatSaberTweaks
 {
-	public class HitVolumeSettingsController : ListSettingsController
+	public class NoteHitVolumeSettingsController : ListSettingsController
 	{
+        protected float[] _volumes;
+
         protected override void GetInitValues(out int idx, out int numberOfElements)
         {
             float num = 0.1f;
@@ -32,15 +34,12 @@ namespace BeatSaberTweaks
 
         protected override void ApplyValue(int idx)
         {
-            
+            Settings.NoteHitVolume = this._volumes[idx];
         }
 
         protected override string TextForValue(int idx)
         {
-            Settings.NoteHitVolume = this._volumes[idx];
             return string.Format("{0:0.0}", this._volumes[idx]);
         }
-
-        protected float[] _volumes;
     }
 }

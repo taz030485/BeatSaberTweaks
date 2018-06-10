@@ -23,8 +23,6 @@ namespace BeatSaberTweaks
                 Instance = this;
                 SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
                 DontDestroyOnLoad(gameObject);
-
-                Console.WriteLine("Move Energy Bar enabled:"+Settings.MoveEnergyBar);
             }
             else
             {

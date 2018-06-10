@@ -103,8 +103,6 @@ namespace BeatSaberTweaks
 
                 foreach (Transform child in ClockCanvas.transform)
                 {
-                    Console.WriteLine(child.name);
-
                     child.name = "Holder";
 
                     DestroyImmediate(child.GetComponent<AutoRaycaster>());
@@ -128,8 +126,6 @@ namespace BeatSaberTweaks
                     }
                 }
 
-                //Console.WriteLine("In game clock setup at:" + ClockCanvas.transform.position);
-
                 DestroyImmediate(ClockCanvas.GetComponent<VRUIScreen>());
                 DestroyImmediate(ClockCanvas.GetComponent<CanvasScaler>());
                 DestroyImmediate(ClockCanvas.GetComponent<RectMask2D>());
@@ -137,11 +133,6 @@ namespace BeatSaberTweaks
                 DestroyImmediate(ClockCanvas.GetComponent<AutoRaycaster>());
                 DestroyImmediate(ClockCanvas.GetComponent<VRGraphicRaycaster>());
                 DestroyImmediate(ClockCanvas.GetComponent<VRGraphicRaycaster>());
-
-                //foreach (var thing in ClockCanvas.GetComponentsInChildren<Component>())
-                //{
-                //    Console.WriteLine(thing.name + " " + thing.transform.parent + " " + thing.GetType().ToString());
-                //}
 
                 yield return null;
 
