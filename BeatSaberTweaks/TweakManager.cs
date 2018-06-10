@@ -97,7 +97,7 @@ namespace BeatSaberTweaks
 
         IEnumerator LoadWarning()
         {
-            string warningText = "The folling plugins are obsulete:\n";
+            string warningText = "The folling plugins are obsolete:\n";
 
             foreach(var text in warningPlugins)
             {
