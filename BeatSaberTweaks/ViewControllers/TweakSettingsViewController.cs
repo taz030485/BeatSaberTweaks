@@ -11,24 +11,29 @@ namespace BeatSaberTweaks
 {
     public class TweakSettingsViewController : VRUIViewController
     {
-        protected bool _firstTimeActivated = true;
+        //protected bool _firstTimeActivated = true;
 
         public VRUIViewController _leftSettings;
         public VRUIViewController _rightSettings;
         public List<SimpleSettingsController> tweakedSettingsControllers = new List<SimpleSettingsController>();
-        protected override void DidActivate()
+
+        protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
-            base.DidActivate();
-            if (_firstTimeActivated)
+            if (firstActivation)
             {
-                _firstTimeActivated = false;
                 SetupButtons();
-                Init();
+                foreach (SimpleSettingsController simpleSettingsController in tweakedSettingsControllers)
+                {
+                    Console.WriteLine("Activating: " + simpleSettingsController.name);
+                    //simpleSettingsController.gameObject.SetActive(true);
+                    simpleSettingsController.Init();
+                    Console.WriteLine("Activated: " + simpleSettingsController.name);
+                }
             }
-            VRUIScreen leftScreen = screen.screenSystem.leftScreen;
-            VRUIScreen rightScreen = screen.screenSystem.rightScreen;
-            leftScreen.SetRootViewController(_leftSettings);
-            rightScreen.SetRootViewController(_rightSettings);
+            //VRUIScreen leftScreen = screen.screenSystem.leftScreen;
+            //VRUIScreen rightScreen = screen.screenSystem.rightScreen;
+            //leftScreen.SetRootViewController(_leftSettings);
+            //rightScreen.SetRootViewController(_rightSettings);
         }
 
         void SetupButtons()
@@ -42,12 +47,52 @@ namespace BeatSaberTweaks
             cancelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Close";
         }
 
-        public virtual void Init()
+        protected override void LeftAndRightScreenViewControllers(out VRUIViewController leftScreenViewController, out VRUIViewController rightScreenViewController)
         {
-            foreach (SimpleSettingsController simpleSettingsController in tweakedSettingsControllers)
+            leftScreenViewController = _leftSettings;
+            rightScreenViewController = _rightSettings;
+        }
+
+        public event Action<TweakSettingsViewController, FinishAction> didFinishEvent;
+        HierarchyRebuildData _hierarchyRebuildData;
+
+        public enum FinishAction
+        {
+            Ok,
+            Cancel,
+            Apply
+        }
+
+        private class HierarchyRebuildData
+        {
+            public HierarchyRebuildData(FinishAction finishAction)
             {
-                simpleSettingsController.gameObject.SetActive(true);
-                simpleSettingsController.Init();
+                this.finishAction = finishAction;
+            }
+
+            public FinishAction finishAction;
+        }
+
+        protected override void RebuildHierarchy(object hierarchyRebuildData)
+        {
+            HierarchyRebuildData hierarchyRebuildData2 = hierarchyRebuildData as HierarchyRebuildData;
+            if (hierarchyRebuildData2 != null)
+            {
+                this.HandleFinishButton(hierarchyRebuildData2.finishAction);
+            }
+        }
+
+        protected override object GetHierarchyRebuildData()
+        {
+            return this._hierarchyRebuildData;
+        }
+
+        public virtual void HandleFinishButton(FinishAction finishAction)
+        {
+            this._hierarchyRebuildData = new HierarchyRebuildData(finishAction);
+            if (this.didFinishEvent != null)
+            {
+                this.didFinishEvent(this, finishAction);
             }
         }
 

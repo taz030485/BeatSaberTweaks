@@ -10,7 +10,7 @@ using VRUI;
 using VRUIControls;
 using TMPro;
 using IllusionPlugin;
-using CameraPlus;
+//using CameraPlus;
 
 namespace BeatSaberTweaks
 {
@@ -167,17 +167,17 @@ namespace BeatSaberTweaks
             SetRectYPos(leftContainer.GetComponent<RectTransform>(), 12);
             SetRectYPos(rightContainer.GetComponent<RectTransform>(), 12);
 
-            CopyListSettingsController<NoteHitVolumeSettingsController>("Note Hit Volume", mainContainer);
-            CopyListSettingsController<NoteMissVolumeSettingsController>("Note Miss Volume", mainContainer);
-            CopyListSettingsController<MenuBGVolumeSettingsController>("Menu BG Music Volume", mainContainer);
+            //CopyListSettingsController<NoteHitVolumeSettingsController>("Note Hit Volume", mainContainer);
+            //CopyListSettingsController<NoteMissVolumeSettingsController>("Note Miss Volume", mainContainer);
+            //CopyListSettingsController<MenuBGVolumeSettingsController>("Menu BG Music Volume", mainContainer);
 
-            CopySwitchSettingsController<MoveEnergyBarSettingsController>("Move Energy Bar", rightContainer);
-            CopySwitchSettingsController<ShowClockSettingsController>("Show Clock", rightContainer);
-            CopySwitchSettingsController<Use24hrClockSettingsController>("24hr Clock", rightContainer);
+            //CopySwitchSettingsController<MoveEnergyBarSettingsController>("Move Energy Bar", rightContainer);
+            //CopySwitchSettingsController<ShowClockSettingsController>("Show Clock", rightContainer);
+            //CopySwitchSettingsController<Use24hrClockSettingsController>("24hr Clock", rightContainer);
 
             if (CameraPlusInstalled)
             {
-                CopySwitchSettingsController<CameraPlusThirdPersonSettingsController>("Third Person Camera", mainContainer);
+                //CopySwitchSettingsController<CameraPlusThirdPersonSettingsController>("Third Person Camera", mainContainer);
             }
         }
 
@@ -218,20 +218,28 @@ namespace BeatSaberTweaks
         void CopyListSettingsController<T>(string name, Transform container) where T : ListSettingsController
         {
             var volumeSettings = Resources.FindObjectsOfTypeAll<VolumeSettingsController>().FirstOrDefault();
-            volumeSettings.gameObject.SetActive(false);
+            //volumeSettings.gameObject.SetActive(false);
+
+            Console.WriteLine(volumeSettings.name);
 
             var SettingsObject = Instantiate(volumeSettings.gameObject, container);
-            SettingsObject.SetActive(false);
+            //SettingsObject.SetActive(false);
             SettingsObject.name = name;
 
-            volumeSettings.gameObject.SetActive(true);
+            Console.WriteLine(SettingsObject.name);
+
+            //volumeSettings.gameObject.SetActive(true);
 
             var volume = SettingsObject.GetComponent<VolumeSettingsController>();
-            var newListSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(SimpleSettingsController), typeof(T), SettingsObject);
+            var newListSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(ListSettingsController), typeof(T), SettingsObject);
             DestroyImmediate(volume);
+
+            Console.WriteLine(newListSettingsController.name);
 
             SettingsObject.GetComponentInChildren<TMP_Text>().text = name;
             tweakSettings.tweakedSettingsControllers.Add(newListSettingsController);
+
+            Console.WriteLine("End");
         }
 
         void CopySwitchSettingsController<T>(string name, Transform container) where T : SwitchSettingsController
@@ -246,7 +254,7 @@ namespace BeatSaberTweaks
             volumeSettings.gameObject.SetActive(true);
 
             var volume = SettingsObject.GetComponent<WindowModeSettingsController>();
-            var newSwitchSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(SimpleSettingsController), typeof(T), SettingsObject);
+            var newSwitchSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(SwitchSettingsController), typeof(T), SettingsObject);
             DestroyImmediate(volume);
 
             SettingsObject.GetComponentInChildren<TMP_Text>().text = name;
