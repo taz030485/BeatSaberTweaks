@@ -24,6 +24,8 @@ namespace BeatSaberTweaks
                 SetupButtons();
                 foreach (SimpleSettingsController simpleSettingsController in tweakedSettingsControllers)
                 {
+                    // NOTE: The problem seems to be in the internal Init function.
+                    // As "Activating" logs, but not "Activated"
                     Console.WriteLine("Activating: " + simpleSettingsController.name);
                     //simpleSettingsController.gameObject.SetActive(true);
                     simpleSettingsController.Init();

@@ -167,6 +167,7 @@ namespace BeatSaberTweaks
             SetRectYPos(leftContainer.GetComponent<RectTransform>(), 12);
             SetRectYPos(rightContainer.GetComponent<RectTransform>(), 12);
 
+            // NOTE: Uncomment any of these and the UI won't initialise
             //CopyListSettingsController<NoteHitVolumeSettingsController>("Note Hit Volume", mainContainer);
             //CopyListSettingsController<NoteMissVolumeSettingsController>("Note Miss Volume", mainContainer);
             //CopyListSettingsController<MenuBGVolumeSettingsController>("Menu BG Music Volume", mainContainer);
