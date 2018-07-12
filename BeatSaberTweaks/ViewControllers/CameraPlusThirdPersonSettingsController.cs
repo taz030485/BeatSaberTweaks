@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-//using CameraPlus;
+using CameraPlus;
 
 namespace BeatSaberTweaks
 {
     class CameraPlusThirdPersonSettingsController : SwitchSettingsController
     {
-        //GameObject cam = null;
+        GameObject cam = null;
 
         protected override bool GetInitValue()
         {
-            //if (cam == null)
-            //{
-            //    var thing = Resources.FindObjectsOfTypeAll<CameraPlusBehaviour>().First();
-            //    cam = ReflectionUtil.GetPrivateField<Transform>(thing, "_cameraCube").gameObject;
-            //}
-            //return CameraPlusBehaviour.ThirdPerson;
+            if (cam == null)
+            {
+                var thing = Resources.FindObjectsOfTypeAll<CameraPlusBehaviour>().First();
+                cam = ReflectionUtil.GetPrivateField<Transform>(thing, "_cameraCube").gameObject;
+            }
+            return CameraPlusBehaviour.ThirdPerson;
 
-            return false;
+            //return false;
         }
 
         protected override void ApplyValue(bool value)
@@ -30,19 +30,19 @@ namespace BeatSaberTweaks
 
         protected override string TextForValue(bool value)
         {
-            //CameraPlusBehaviour.ThirdPerson = value;
-            //if (value)
-            //{
-            //    CameraPlus.Plugin.Ini.WriteValue("thirdPerson", "true");
-            //}
-            //else
-            //{
-            //    CameraPlus.Plugin.Ini.WriteValue("thirdPerson", "false");
-            //}
-            //if (cam)
-            //{
-            //    cam.SetActive(value);
-            //}
+            CameraPlusBehaviour.ThirdPerson = value;
+            if (value)
+            {
+                CameraPlus.Plugin.Ini.WriteValue("thirdPerson", "true");
+            }
+            else
+            {
+                CameraPlus.Plugin.Ini.WriteValue("thirdPerson", "false");
+            }
+            if (cam)
+            {
+                cam.SetActive(value);
+            }
             return (!value) ? "OFF" : "ON";
         }
     }

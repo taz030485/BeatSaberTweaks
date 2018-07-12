@@ -11,11 +11,18 @@ namespace BeatSaberTweaks
 {
     public class TweakSettingsViewController : VRUIViewController
     {
-        //protected bool _firstTimeActivated = true;
-
         public VRUIViewController _leftSettings;
         public VRUIViewController _rightSettings;
-        public List<SimpleSettingsController> tweakedSettingsControllers = new List<SimpleSettingsController>();
+        List<SimpleSettingsController> tweakedSettingsControllers;
+
+        public void AddController(SimpleSettingsController controller)
+        {
+            if (tweakedSettingsControllers == null)
+            {
+                tweakedSettingsControllers = new List<SimpleSettingsController>();
+            }
+            tweakedSettingsControllers.Add(controller);
+        }
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
@@ -24,18 +31,9 @@ namespace BeatSaberTweaks
                 SetupButtons();
                 foreach (SimpleSettingsController simpleSettingsController in tweakedSettingsControllers)
                 {
-                    // NOTE: The problem seems to be in the internal Init function.
-                    // As "Activating" logs, but not "Activated"
-                    Console.WriteLine("Activating: " + simpleSettingsController.name);
-                    //simpleSettingsController.gameObject.SetActive(true);
                     simpleSettingsController.Init();
-                    Console.WriteLine("Activated: " + simpleSettingsController.name);
                 }
             }
-            //VRUIScreen leftScreen = screen.screenSystem.leftScreen;
-            //VRUIScreen rightScreen = screen.screenSystem.rightScreen;
-            //leftScreen.SetRootViewController(_leftSettings);
-            //rightScreen.SetRootViewController(_rightSettings);
         }
 
         void SetupButtons()
@@ -80,21 +78,21 @@ namespace BeatSaberTweaks
             HierarchyRebuildData hierarchyRebuildData2 = hierarchyRebuildData as HierarchyRebuildData;
             if (hierarchyRebuildData2 != null)
             {
-                this.HandleFinishButton(hierarchyRebuildData2.finishAction);
+                HandleFinishButton(hierarchyRebuildData2.finishAction);
             }
         }
 
         protected override object GetHierarchyRebuildData()
         {
-            return this._hierarchyRebuildData;
+            return _hierarchyRebuildData;
         }
 
         public virtual void HandleFinishButton(FinishAction finishAction)
         {
-            this._hierarchyRebuildData = new HierarchyRebuildData(finishAction);
-            if (this.didFinishEvent != null)
+            _hierarchyRebuildData = new HierarchyRebuildData(finishAction);
+            if (didFinishEvent != null)
             {
-                this.didFinishEvent(this, finishAction);
+                didFinishEvent(this, finishAction);
             }
         }
 
