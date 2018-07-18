@@ -14,7 +14,7 @@ namespace BeatSaberTweaks
         public VRUIViewController _leftSettings;
         public VRUIViewController _rightSettings;
         List<SimpleSettingsController> tweakedSettingsControllers;
-
+        
         public void AddController(SimpleSettingsController controller)
         {
             if (tweakedSettingsControllers == null)
@@ -24,6 +24,28 @@ namespace BeatSaberTweaks
             tweakedSettingsControllers.Add(controller);
         }
 
+#if true    
+        // Old version
+        private bool _firstTimeActivated = true;
+        protected override void DidActivate()
+        {
+            base.DidActivate();
+            if (_firstTimeActivated)
+            {
+                _firstTimeActivated = false;
+                SetupButtons();
+                foreach (SimpleSettingsController simpleSettingsController in tweakedSettingsControllers)
+                {
+                    simpleSettingsController.Init();
+                }
+            }
+            VRUIScreen leftScreen = screen.screenSystem.leftScreen;
+            VRUIScreen rightScreen = screen.screenSystem.rightScreen;
+            leftScreen.SetRootViewController(_leftSettings);
+            rightScreen.SetRootViewController(_rightSettings);
+        }
+#else
+        // New version
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
             if (firstActivation)
@@ -34,17 +56,6 @@ namespace BeatSaberTweaks
                     simpleSettingsController.Init();
                 }
             }
-        }
-
-        void SetupButtons()
-        {
-            DestroyImmediate(transform.Find("OkButton").gameObject);
-            DestroyImmediate(transform.Find("ApplyButton").gameObject);
-            Button cancelButton = transform.Find("CancelButton").GetComponent<Button>();
-            DestroyImmediate(cancelButton.GetComponent<GameEventOnUIButtonClick>());
-            cancelButton.onClick = new Button.ButtonClickedEvent();
-            cancelButton.onClick.AddListener(CloseButtonPressed);
-            cancelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Close";
         }
 
         protected override void LeftAndRightScreenViewControllers(out VRUIViewController leftScreenViewController, out VRUIViewController rightScreenViewController)
@@ -94,6 +105,18 @@ namespace BeatSaberTweaks
             {
                 didFinishEvent(this, finishAction);
             }
+        }
+#endif
+
+        void SetupButtons()
+        {
+            DestroyImmediate(transform.Find("OkButton").gameObject);
+            DestroyImmediate(transform.Find("ApplyButton").gameObject);
+            Button cancelButton = transform.Find("CancelButton").GetComponent<Button>();
+            DestroyImmediate(cancelButton.GetComponent<GameEventOnUIButtonClick>());
+            cancelButton.onClick = new Button.ButtonClickedEvent();
+            cancelButton.onClick.AddListener(CloseButtonPressed);
+            cancelButton.GetComponentInChildren<TextMeshProUGUI>().text = "Close";
         }
 
         void ApplySettings()

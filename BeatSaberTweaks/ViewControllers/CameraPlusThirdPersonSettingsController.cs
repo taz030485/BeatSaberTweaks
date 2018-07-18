@@ -19,16 +19,9 @@ namespace BeatSaberTweaks
                 cam = ReflectionUtil.GetPrivateField<Transform>(thing, "_cameraCube").gameObject;
             }
             return CameraPlusBehaviour.ThirdPerson;
-
-            //return false;
         }
 
         protected override void ApplyValue(bool value)
-        {
-            
-        }
-
-        protected override string TextForValue(bool value)
         {
             CameraPlusBehaviour.ThirdPerson = value;
             if (value)
@@ -43,6 +36,10 @@ namespace BeatSaberTweaks
             {
                 cam.SetActive(value);
             }
+        }
+
+        protected override string TextForValue(bool value)
+        {
             return (!value) ? "OFF" : "ON";
         }
     }

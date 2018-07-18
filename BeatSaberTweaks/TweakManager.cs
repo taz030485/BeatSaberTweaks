@@ -26,7 +26,10 @@ namespace BeatSaberTweaks
 
         List<string> warningPlugins = new List<string>();
 
+        static MainGameSceneSetupData _mainGameSceneSetupData = null;
+
         bool CameraPlusInstalled = false;
+        bool HiddenNotesInstalled = false;
 
         public static void OnLoad()
         {
@@ -49,7 +52,8 @@ namespace BeatSaberTweaks
                     "In Game Time",
                     "Move Energy Bar",
                     "Note Hit Volume",
-                    "Beat Saber Score Mover"
+                    "Beat Saber Score Mover",
+                    "Practice Plugin"
                 };
 
                 foreach (var plugin in IllusionInjector.PluginManager.Plugins)
@@ -64,6 +68,11 @@ namespace BeatSaberTweaks
                     {
                         CameraPlusInstalled = true;
                     }
+
+                    if (plugin.Name == "Hidden Notes")
+                    {
+                        HiddenNotesInstalled = true;
+                    }
                 }
 
                 MoveEnergyBar.OnLoad(transform);
@@ -71,7 +80,10 @@ namespace BeatSaberTweaks
                 InGameClock.OnLoad(transform);
                 NoteHitVolume.OnLoad(transform);
                 MenuBGVolume.OnLoad(transform);
+                OneColour.OnLoad(transform);
                 SongDataModifer.OnLoad(transform);
+                SongSpeed.OnLoad(transform);
+
             }
             else
             {
@@ -82,6 +94,21 @@ namespace BeatSaberTweaks
         public void Update()
         {
 
+        }
+
+        public static bool IsPartyMode()
+        {
+            if (_mainGameSceneSetupData == null)
+            {
+                _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
+            }
+
+            if (_mainGameSceneSetupData == null || SceneManager.GetActiveScene().buildIndex != 4)
+            {
+                return false;
+            }
+
+            return _mainGameSceneSetupData.gameplayMode == GameplayMode.PartyStandard;
         }
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
@@ -170,9 +197,9 @@ namespace BeatSaberTweaks
             Transform mainContainer = tweakSettingsObject.transform.Find("SettingsContainer");
             Transform leftContainer = left.transform.Find("SettingsContainer");
             Transform rightContainer = right.transform.Find("SettingsContainer");
-            SetRectYPos(mainContainer.GetComponent<RectTransform>(), 12);
-            SetRectYPos(leftContainer.GetComponent<RectTransform>(), 12);
-            SetRectYPos(rightContainer.GetComponent<RectTransform>(), 12);
+            SetRectYPos(mainContainer.GetComponent<RectTransform>(), 6);
+            SetRectYPos(leftContainer.GetComponent<RectTransform>(), 0);
+            SetRectYPos(rightContainer.GetComponent<RectTransform>(), 0);
 
             CopyListSettingsController<NoteHitVolumeSettingsController>("Note Hit Volume", mainContainer);
             CopyListSettingsController<NoteMissVolumeSettingsController>("Note Miss Volume", mainContainer);
@@ -187,11 +214,20 @@ namespace BeatSaberTweaks
             CopySwitchSettingsController<OneColourSettingsController>("One Color", leftContainer);
             CopySwitchSettingsController<RemoveBombsSettingsController>("Remove Bombs", leftContainer);
             CopySwitchSettingsController<RemoveHighWallsSettingsController>("Remove High Walls", leftContainer);
+            CopyListSettingsController<SongSpeedSettingsController>("Song Speed", leftContainer);
+            CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", leftContainer);
+            CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", leftContainer);
 
             if (CameraPlusInstalled)
             {
                 CopySwitchSettingsController<CameraPlusThirdPersonSettingsController>("Third Person Camera", mainContainer);
             }
+
+            if (HiddenNotesInstalled)
+            {
+                CopySwitchSettingsController<HiddenNotesSettingsController>("Hidden Notes", mainContainer);
+            }
+
         }
 
         void SetRectYPos(RectTransform rect, float y)

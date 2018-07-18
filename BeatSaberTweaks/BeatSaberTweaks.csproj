@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
@@ -37,6 +39,10 @@
     </Reference>
     <Reference Include="CameraPlus">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\CameraPlus.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Hidden_Notes">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\Hidden_Notes.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IllusionInjector">
@@ -87,13 +93,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tweaks\OneColour.cs" />
+    <Compile Include="Tweaks\SongSpeed.cs" />
     <Compile Include="Tweaks\SongDataModifer.cs" />
     <Compile Include="Tweaks\MenuBGVolume.cs" />
     <Compile Include="Tweaks\ScoreMover.cs" />
     <Compile Include="Utilites\ConInput.cs" />
     <Compile Include="Utilites\Ryder.Lightweight.cs" />
-    <Compile Include="ViewControllers\MenuBGVolumeSettingsController.cs" />
     <Compile Include="ViewControllers\CameraPlusThirdPersonSettingsController.cs" />
+    <Compile Include="ViewControllers\MenuBGVolumeSettingsController.cs" />
+    <Compile Include="ViewControllers\HiddenNotesSettingsController.cs" />
+    <Compile Include="ViewControllers\SongSpeedSettingsController.cs" />
+    <Compile Include="ViewControllers\NoteJumpSpeedSettingsController.cs" />
+    <Compile Include="ViewControllers\OverrideJumpSpeedSettingsController.cs" />
     <Compile Include="ViewControllers\RemoveBombsSettingsController.cs" />
     <Compile Include="ViewControllers\RemoveHighWallsSettingsController.cs" />
     <Compile Include="ViewControllers\OneColourSettingsController.cs" />

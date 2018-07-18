@@ -72,6 +72,12 @@ namespace BeatSaberTweaks
         bool removeBombs = false;
         public static bool RemoveBombs { get => instance.removeBombs; set => instance.removeBombs = value; }
 
+        bool overrideJumpSpeed = false;
+        public static bool OverrideJumpSpeed { get => instance.overrideJumpSpeed; set => instance.overrideJumpSpeed = value; }
+
+        float noteJumpSpeed = 10.0f;
+        public static float NoteJumpSpeed { get => instance.noteJumpSpeed; set => instance.noteJumpSpeed = value; }
+
         public Settings()
         {
             

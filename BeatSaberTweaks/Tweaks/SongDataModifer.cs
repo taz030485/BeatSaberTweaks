@@ -47,12 +47,10 @@ namespace BeatSaberTweaks
 
             if (gameplayMode == GameplayMode.PartyStandard)
             {
-                Console.WriteLine("Modified");
                 songData2 = ApplyModifiers(songData2);
             }
             else
             {
-                Console.WriteLine("Original");
                 if (gameplayMode == GameplayMode.SoloNoArrows)
                 {
                     songData2 = SongDataNoArrowsTransform.CreateTransformedData(songData2);
@@ -69,31 +67,6 @@ namespace BeatSaberTweaks
                 songData2 = songData.GetCopy();
             }
             return songData2;
-
-            /*
-
-            if (gameplayMode == GameplayMode.PartyStandard)
-            {
-                Console.WriteLine("Modified");
-                SongData songData2 = songData;
-                if (gameplayOptions.mirror)
-                {
-                    songData2 = SongDataMirrorTransform.CreateTransformedData(songData2);
-                }
-                if (songData2 == songData)
-                {
-                    songData2 = songData.GetCopy();
-                }
-                return songData2;
-            }
-            else
-            {
-                Console.WriteLine("Original");
-                SongData newData = (SongData)songDataRedirect.InvokeOriginal(null, songData, gameplayOptions, gameplayMode);
-                Console.WriteLine(newData.BeatsPerMinute);
-                return newData;
-            }
-            */
         }
 
         public static SongData ApplyModifiers(SongData songData)
@@ -179,7 +152,8 @@ namespace BeatSaberTweaks
                     array4[num5] = songEventData.GetCopy();
                 }
             }
-            return new SongData(songData.BeatsPerMinute, songData.NoteJumpSpeed, array3, array4);
+
+            return new SongData(songData.BeatsPerMinute, Settings.OverrideJumpSpeed ? Settings.NoteJumpSpeed :  songData.NoteJumpSpeed, array3, array4);
         }
 
         private static void ModifyObjects(List<SongObjectData> songObjects)
@@ -209,20 +183,20 @@ namespace BeatSaberTweaks
                     }
                 }
                 
-                if (songObjectData.songObjectType == SongObjectData.SongObjectTypeEnum.Obstacle)
-                {
-                    ObstacleData obstacleData = songObjectData as ObstacleData;
-                    if (obstacleData != null)
-                    {
-                        if (obstacleData.obstacleType == ObstacleData.ObstacleType.Top)
-                        {
-                        if (Settings.RemoveHighWalls)
-                        {
-                            songObjects[i] = null;
-                        }
-                        }
-                    }
-                }
+                //if (songObjectData.songObjectType == SongObjectData.SongObjectTypeEnum.Obstacle)
+                //{
+                //    ObstacleData obstacleData = songObjectData as ObstacleData;
+                //    if (obstacleData != null)
+                //    {
+                //        if (obstacleData.obstacleType == ObstacleType.Top)
+                //        {
+                //        if (Settings.RemoveHighWalls)
+                //        {
+                //            songObjects[i] = null;
+                //        }
+                //        }
+                //    }
+                //}
             }
         }
     }
