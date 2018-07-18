@@ -10,7 +10,6 @@ using VRUI;
 using VRUIControls;
 using TMPro;
 using IllusionPlugin;
-using CameraPlus;
 
 namespace BeatSaberTweaks
 {
@@ -27,7 +26,10 @@ namespace BeatSaberTweaks
 
         List<string> warningPlugins = new List<string>();
 
+        static MainGameSceneSetupData _mainGameSceneSetupData = null;
+
         bool CameraPlusInstalled = false;
+        bool HiddenNotesInstalled = false;
 
         public static void OnLoad()
         {
@@ -45,7 +47,14 @@ namespace BeatSaberTweaks
 
                 Console.WriteLine("Tweak Manager started.");
 
-                string[] oldPlugins = new string[] { "In Game Time", "Move Energy Bar", "Note Hit Volume" };
+                string[] oldPlugins = new string[] 
+                {
+                    "In Game Time",
+                    "Move Energy Bar",
+                    "Note Hit Volume",
+                    "Beat Saber Score Mover",
+                    "Practice Plugin"
+                };
 
                 foreach (var plugin in IllusionInjector.PluginManager.Plugins)
                 {
@@ -59,12 +68,22 @@ namespace BeatSaberTweaks
                     {
                         CameraPlusInstalled = true;
                     }
+
+                    if (plugin.Name == "Hidden Notes")
+                    {
+                        HiddenNotesInstalled = true;
+                    }
                 }
 
                 MoveEnergyBar.OnLoad(transform);
+                ScoreMover.OnLoad(transform);
                 InGameClock.OnLoad(transform);
                 NoteHitVolume.OnLoad(transform);
                 MenuBGVolume.OnLoad(transform);
+                OneColour.OnLoad(transform);
+                SongDataModifer.OnLoad(transform);
+                SongSpeed.OnLoad(transform);
+
             }
             else
             {
@@ -75,6 +94,21 @@ namespace BeatSaberTweaks
         public void Update()
         {
 
+        }
+
+        public static bool IsPartyMode()
+        {
+            if (_mainGameSceneSetupData == null)
+            {
+                _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
+            }
+
+            if (_mainGameSceneSetupData == null || SceneManager.GetActiveScene().buildIndex != 4)
+            {
+                return false;
+            }
+
+            return _mainGameSceneSetupData.gameplayMode == GameplayMode.PartyStandard;
         }
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
@@ -157,28 +191,43 @@ namespace BeatSaberTweaks
             CleanScreen(right);
 
             SetTitle(tweakSettings, "TWEAKS");
-            SetTitle(left, "TWEAKS");
+            SetTitle(left, "PARTY MODE ONLY");
             SetTitle(right, "TWEAKS");
 
             Transform mainContainer = tweakSettingsObject.transform.Find("SettingsContainer");
             Transform leftContainer = left.transform.Find("SettingsContainer");
             Transform rightContainer = right.transform.Find("SettingsContainer");
-            SetRectYPos(mainContainer.GetComponent<RectTransform>(), 12);
-            SetRectYPos(leftContainer.GetComponent<RectTransform>(), 12);
-            SetRectYPos(rightContainer.GetComponent<RectTransform>(), 12);
+            SetRectYPos(mainContainer.GetComponent<RectTransform>(), 6);
+            SetRectYPos(leftContainer.GetComponent<RectTransform>(), 0);
+            SetRectYPos(rightContainer.GetComponent<RectTransform>(), 0);
 
             CopyListSettingsController<NoteHitVolumeSettingsController>("Note Hit Volume", mainContainer);
             CopyListSettingsController<NoteMissVolumeSettingsController>("Note Miss Volume", mainContainer);
             CopyListSettingsController<MenuBGVolumeSettingsController>("Menu BG Music Volume", mainContainer);
 
             CopySwitchSettingsController<MoveEnergyBarSettingsController>("Move Energy Bar", rightContainer);
+            CopySwitchSettingsController<MoveScoreSettingsController>("Move Score", rightContainer);
             CopySwitchSettingsController<ShowClockSettingsController>("Show Clock", rightContainer);
             CopySwitchSettingsController<Use24hrClockSettingsController>("24hr Clock", rightContainer);
+
+            CopySwitchSettingsController<NoArrowsSettingsController>("No Arrows", leftContainer);
+            CopySwitchSettingsController<OneColourSettingsController>("One Color", leftContainer);
+            CopySwitchSettingsController<RemoveBombsSettingsController>("Remove Bombs", leftContainer);
+            CopySwitchSettingsController<RemoveHighWallsSettingsController>("Remove High Walls", leftContainer);
+            CopyListSettingsController<SongSpeedSettingsController>("Song Speed", leftContainer);
+            CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", leftContainer);
+            CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", leftContainer);
 
             if (CameraPlusInstalled)
             {
                 CopySwitchSettingsController<CameraPlusThirdPersonSettingsController>("Third Person Camera", mainContainer);
             }
+
+            if (HiddenNotesInstalled)
+            {
+                CopySwitchSettingsController<HiddenNotesSettingsController>("Hidden Notes", mainContainer);
+            }
+
         }
 
         void SetRectYPos(RectTransform rect, float y)
@@ -218,53 +267,42 @@ namespace BeatSaberTweaks
         void CopyListSettingsController<T>(string name, Transform container) where T : ListSettingsController
         {
             var volumeSettings = Resources.FindObjectsOfTypeAll<VolumeSettingsController>().FirstOrDefault();
-            volumeSettings.gameObject.SetActive(false);
+            GameObject newSettingsObject = Instantiate(volumeSettings.gameObject, container);
+            newSettingsObject.name = name;
 
-            var SettingsObject = Instantiate(volumeSettings.gameObject, container);
-            SettingsObject.SetActive(false);
-            SettingsObject.name = name;
-
-            volumeSettings.gameObject.SetActive(true);
-
-            var volume = SettingsObject.GetComponent<VolumeSettingsController>();
-            var newListSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(SimpleSettingsController), typeof(T), SettingsObject);
+            VolumeSettingsController volume = newSettingsObject.GetComponent<VolumeSettingsController>();
+            T newListSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(ListSettingsController), typeof(T), newSettingsObject);
             DestroyImmediate(volume);
 
-            SettingsObject.GetComponentInChildren<TMP_Text>().text = name;
-            tweakSettings.tweakedSettingsControllers.Add(newListSettingsController);
+            newSettingsObject.GetComponentInChildren<TMP_Text>().text = name;
+            tweakSettings.AddController(newListSettingsController);
         }
 
         void CopySwitchSettingsController<T>(string name, Transform container) where T : SwitchSettingsController
         {
             var volumeSettings = Resources.FindObjectsOfTypeAll<WindowModeSettingsController>().FirstOrDefault();
-            volumeSettings.gameObject.SetActive(false);
+            GameObject newSettingsObject = Instantiate(volumeSettings.gameObject, container);
+            newSettingsObject.name = name;
 
-            var SettingsObject = Object.Instantiate(volumeSettings.gameObject, container);
-            SettingsObject.SetActive(false);
-            SettingsObject.name = name;
-
-            volumeSettings.gameObject.SetActive(true);
-
-            var volume = SettingsObject.GetComponent<WindowModeSettingsController>();
-            var newSwitchSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(SimpleSettingsController), typeof(T), SettingsObject);
+            WindowModeSettingsController volume = newSettingsObject.GetComponent<WindowModeSettingsController>();
+            T newListSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(SwitchSettingsController), typeof(T), newSettingsObject);
             DestroyImmediate(volume);
 
-            SettingsObject.GetComponentInChildren<TMP_Text>().text = name;
-            tweakSettings.tweakedSettingsControllers.Add(newSwitchSettingsController);
+            newSettingsObject.GetComponentInChildren<TMP_Text>().text = name;
+            tweakSettings.AddController(newListSettingsController);
         }
 
         private void CreateTweakSettingsButton()
         {
-            var settingsButton = _mainMenuViewController.transform.Find("SettingsButton").GetComponent<Button>();
-
-            Button btn = Instantiate(settingsButton, settingsButton.transform.parent, false);
-            DestroyImmediate(btn.GetComponent<GameEventOnUIButtonClick>());
-            btn.onClick = new Button.ButtonClickedEvent();
-
+            var settingsButton = _mainMenuViewController.transform.Find("SettingsButton").gameObject;
+            GameObject btnGo = Instantiate(settingsButton, settingsButton.transform.parent, false);
+            btnGo.name = "TweaksButton";
+            Button btn = btnGo.GetComponent<Button>();
             (btn.transform as RectTransform).anchoredPosition = new Vector2(-36f, 7f);
             (btn.transform as RectTransform).sizeDelta = new Vector2(28f, 10f);
-
             btn.GetComponentInChildren<TextMeshProUGUI>().text = "Tweaks";
+            DestroyImmediate(btn.GetComponent<GameEventOnUIButtonClick>());
+            btn.onClick = new Button.ButtonClickedEvent();
             btn.onClick.AddListener(ShowTweakSettings);
         }
 

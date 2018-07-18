@@ -6,21 +6,21 @@ using UnityEngine.UI;
 
 namespace BeatSaberTweaks
 {
-	public class NoteHitVolumeSettingsController : ListSettingsController
+	public class NoteJumpSpeedSettingsController : ListSettingsController
 	{
         protected float[] _volumes;
 
         protected override void GetInitValues(out int idx, out int numberOfElements)
         {
-            float num = 0.1f;
-            float num2 = 0.0f;
-            numberOfElements = 11;
+            float minValue = 5f;
+            float increments = 1f;
+            numberOfElements = 16;
             _volumes = new float[numberOfElements];
             for (int i = 0; i < _volumes.Length; i++)
             {
-                _volumes[i] = num2 + num * i;
+                _volumes[i] = minValue + increments * i;
             }
-            float volume = Settings.NoteHitVolume;
+            float volume = Settings.NoteJumpSpeed;
             idx = numberOfElements - 1;
             for (int j = 0; j < _volumes.Length; j++)
             {
@@ -34,13 +34,13 @@ namespace BeatSaberTweaks
 
         protected override void ApplyValue(int idx)
         {
-            Settings.NoteHitVolume = _volumes[idx];
-            NoteHitVolume.UpdateVolumes();
+            Settings.NoteJumpSpeed = _volumes[idx];
         }
 
         protected override string TextForValue(int idx)
         {
-            return string.Format("{0:0.0}", _volumes[idx]);
+            Settings.NoteJumpSpeed = _volumes[idx];
+            return string.Format("{0:0}", _volumes[idx]);
         }
     }
 }

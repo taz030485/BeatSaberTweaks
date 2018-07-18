@@ -55,6 +55,28 @@ namespace BeatSaberTweaks
         float energyBarHeight = 3.0f;
         public static float EnergyBarHeight { get => instance.energyBarHeight; set => instance.energyBarHeight = value; }
 
+        // Move Score
+        [SerializeField]
+        bool moveScore = false;
+        public static bool MoveScore { get => instance.moveScore; set => instance.moveScore = value; }
+
+        bool removeHighWalls = false;
+        public static bool RemoveHighWalls { get => instance.removeHighWalls; set => instance.removeHighWalls = value; }
+
+        bool noArrows = false;
+        public static bool NoArrows { get => instance.noArrows; set => instance.noArrows = value; }
+
+        bool oneColour = false;
+        public static bool OneColour { get => instance.oneColour; set => instance.oneColour = value; }
+
+        bool removeBombs = false;
+        public static bool RemoveBombs { get => instance.removeBombs; set => instance.removeBombs = value; }
+
+        bool overrideJumpSpeed = false;
+        public static bool OverrideJumpSpeed { get => instance.overrideJumpSpeed; set => instance.overrideJumpSpeed = value; }
+
+        float noteJumpSpeed = 10.0f;
+        public static float NoteJumpSpeed { get => instance.noteJumpSpeed; set => instance.noteJumpSpeed = value; }
 
         public Settings()
         {

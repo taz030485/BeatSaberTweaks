@@ -32,18 +32,28 @@ namespace BeatSaberTweaks
 			dynMethod.Invoke(obj, methodParams);
 		}
 
-		public static Component CopyComponent(Component original, Type originalType, Type overridingType,
-			GameObject destination)
-		{
-			var copy = destination.AddComponent(overridingType);
-			var fields = originalType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance |
-			                                    BindingFlags.GetField);
-			foreach (var field in fields)
-			{
-				field.SetValue(copy, field.GetValue(original));
-			}
+        public static Component CopyComponent(Component original, Type originalType, Type overridingType, GameObject destination)
+        {
+            var copy = destination.AddComponent(overridingType);
 
-			return copy;
-		}
-	}
+            Type type = originalType;
+            while (type != typeof(MonoBehaviour))
+            {
+                CopyForType(type, original, copy);
+                type = type.BaseType;
+            }
+
+            return copy;
+        }
+
+        private static void CopyForType(Type type, Component source, Component destination)
+        {
+            FieldInfo[] myObjectFields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetField);
+
+            foreach (FieldInfo fi in myObjectFields)
+            {
+                fi.SetValue(destination, fi.GetValue(source));
+            }
+        }
+    }
 }
