@@ -14,8 +14,8 @@ Toggle third person camera (If CameraPlus is installed)
 
 (Features marked 'Party' will work in Party Mode only as to not mess with online leaderboards)  
 **Known Issues:**  
-No UI for options yet
-Features marked with an X broke with the new updated and will be fixed later
+No UI for options yet  
+Features marked with an X broke with the new updated and will be fixed later  
 Vibration is disabled when One Color is turned on, since one controller will vibrate when the other hits notes.  
 
 # Changes  
