@@ -40,7 +40,7 @@ namespace BeatSaberTweaks
 
         public static void UpdateBGVolume()
         {
-            if (player != null && SceneManager.GetActiveScene().buildIndex == 1)
+            if (player != null && SceneManager.GetActiveScene().buildIndex == TweakManager.MainScene)
             {
                 float newVolume = normalVolume * Settings.MenuBGVolume;
                 ReflectionUtil.SetPrivateField(player, "_ambientVolumeScale", newVolume);
@@ -50,7 +50,7 @@ namespace BeatSaberTweaks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == 1)
+            if (scene.buildIndex == TweakManager.MainScene)
             {
                 player = Resources.FindObjectsOfTypeAll<SongPreviewPlayer>().FirstOrDefault();
                 if (normalVolume == 0)

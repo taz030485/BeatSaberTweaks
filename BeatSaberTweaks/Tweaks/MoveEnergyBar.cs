@@ -32,7 +32,7 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (Settings.MoveEnergyBar && scene.buildIndex == 4)
+            if (Settings.MoveEnergyBar && scene.buildIndex == TweakManager.GameScene)
             {
                 var energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().FirstOrDefault();
                 var pos = energyPanel.transform.position;

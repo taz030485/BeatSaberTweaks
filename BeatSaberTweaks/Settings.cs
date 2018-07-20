@@ -60,9 +60,6 @@ namespace BeatSaberTweaks
         bool moveScore = false;
         public static bool MoveScore { get => instance.moveScore; set => instance.moveScore = value; }
 
-        bool removeHighWalls = false;
-        public static bool RemoveHighWalls { get => instance.removeHighWalls; set => instance.removeHighWalls = value; }
-
         bool noArrows = false;
         public static bool NoArrows { get => instance.noArrows; set => instance.noArrows = value; }
 
