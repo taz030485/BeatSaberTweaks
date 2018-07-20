@@ -100,6 +100,7 @@
     <Compile Include="Tweaks\ScoreMover.cs" />
     <Compile Include="Utilites\ConInput.cs" />
     <Compile Include="Utilites\Ryder.Lightweight.cs" />
+    <Compile Include="Utilites\SettingsUI.cs" />
     <Compile Include="ViewControllers\CameraPlusThirdPersonSettingsController.cs" />
     <Compile Include="ViewControllers\MenuBGVolumeSettingsController.cs" />
     <Compile Include="ViewControllers\HiddenNotesSettingsController.cs" />

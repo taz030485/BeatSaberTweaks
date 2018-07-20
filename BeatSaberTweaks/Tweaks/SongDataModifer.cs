@@ -98,7 +98,7 @@ namespace BeatSaberTweaks
                 if (flag)
                 {
                     var note = beatmapLinesData[num3].beatmapObjectsData[array[num3]].GetCopy();
-                    if (Settings.RemoveBombs && !IsBomb(note))
+                    if (!(Settings.RemoveBombs && IsBomb(note)))
                     {
                         list.Add(beatmapLinesData[num3].beatmapObjectsData[array[num3]].GetCopy());
                     }
@@ -152,7 +152,6 @@ namespace BeatSaberTweaks
             for (int i = 0; i < beatmapObjects.Count; i++)
             {
                 BeatmapObjectData beatmapObjectData = beatmapObjects[i];
-                beatmapObjectData.MirrorLineIndex(beatmapLineCount);
                 if (beatmapObjectData.beatmapObjectType == BeatmapObjectType.Note)
                 {
                     NoteData noteData = beatmapObjectData as NoteData;

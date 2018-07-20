@@ -45,7 +45,7 @@ namespace BeatSaberTweaks
                 }
                 model.controllersRumbleEnabled = rumble;
             }
-            if (Settings.OneColour && TweakManager.IsPartyMode())
+            if (scene.buildIndex == TweakManager.GameScene && Settings.OneColour &&  TweakManager.IsPartyMode())
             {
                 PlayerController _playerController = FindObjectOfType<PlayerController>();
                 Saber left = _playerController.leftSaber;

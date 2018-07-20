@@ -17,13 +17,7 @@ namespace BeatSaberTweaks
     {
         public static TweakManager Instance = null;
         MainMenuViewController _mainMenuViewController = null;
-        VRUIViewController _howToPlayViewController = null;
-        VRUIViewController _releaseInfoViewController = null;
         SimpleDialogPromptViewController prompt = null;
-
-        TweakSettingsViewController tweakSettings = null;
-        VRUIViewController left = null;
-        VRUIViewController right = null;
 
         List<string> warningPlugins = new List<string>();
 
@@ -84,8 +78,8 @@ namespace BeatSaberTweaks
                 InGameClock.OnLoad(transform);
                 NoteHitVolume.OnLoad(transform);
                 MenuBGVolume.OnLoad(transform);
-                //OneColour.OnLoad(transform);
-                //SongDataModifer.OnLoad(transform);
+                OneColour.OnLoad(transform);
+                SongDataModifer.OnLoad(transform);
                 SongSpeed.OnLoad(transform);
             }
             else
@@ -98,47 +92,48 @@ namespace BeatSaberTweaks
         {
             if (SceneManager.GetActiveScene().buildIndex == MainScene)
             {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    //string path = "Testing";
+                    //Console.WriteLine(path);
+                    //prompt.didFinishEvent += Prompt_didFinishEvent;
+                    //prompt.Init("Test Prompt", path, "ON", "OFF");
+                    //_mainMenuViewController.PresentModalViewController(prompt, null, false);
+                    NewSetup();
+                }
+
                 if (_mainMenuViewController.childViewController != null)
                 {
                     return;
                 }
 
-                //if (Input.GetKeyDown(KeyCode.Space))
-                //{
-                //    string path = "Testing";
-                //    Console.WriteLine(path);
-                //    prompt.didFinishEvent += Prompt_didFinishEvent;
-                //    prompt.Init("Test Prompt", path, "ON", "OFF");
-                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //}
+                if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
+                    Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
+                    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
+                {
+                    prompt.didFinishEvent += OneColorEvent;
+                    prompt.Init("One Color", "Turn One color mode on?", "ON", "OFF");
+                    _mainMenuViewController.PresentModalViewController(prompt, null, false);
+                    return;
+                }
 
-                //if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
-                //    Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) && 
-                //    Input.GetKeyDown((KeyCode)ConInput.Vive.LeftTrigger))
-                //{
-                //    prompt.didFinishEvent += OneColorEvent;
-                //    prompt.Init("One Color", "Turn One color mode on?", "ON", "OFF");
-                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //    return;
-                //}
+                if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
+                    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
+                {
+                    prompt.didFinishEvent += RemoveBombsEvent;
+                    prompt.Init("Remove Bombs", "Turn Remove Bombs mode on?", "ON", "OFF");
+                    _mainMenuViewController.PresentModalViewController(prompt, null, false);
+                    return;
+                }
 
-                //if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) && 
-                //    Input.GetKeyDown((KeyCode)ConInput.Vive.LeftTrigger))
-                //{
-                //    prompt.didFinishEvent += RemoveBombsEvent;
-                //    prompt.Init("Remove Bombs", "Turn Remove Bombs mode on?", "ON", "OFF");
-                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //    return;
-                //}
-
-                //if (Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) && 
-                //    Input.GetKeyDown((KeyCode)ConInput.Vive.LeftTrigger))
-                //{
-                //    prompt.didFinishEvent += NoArrowsEvent;
-                //    prompt.Init("No Arrows", "Turn No Arrows mode on?", "ON", "OFF");
-                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //    return;
-                //}
+                if (Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
+                    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
+                {
+                    prompt.didFinishEvent += NoArrowsEvent;
+                    prompt.Init("No Arrows", "Turn No Arrows mode on?", "ON", "OFF");
+                    _mainMenuViewController.PresentModalViewController(prompt, null, false);
+                    return;
+                }
             }
         }
 
@@ -182,7 +177,7 @@ namespace BeatSaberTweaks
                 _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
             }
 
-            if (_mainGameSceneSetupData == null || SceneManager.GetActiveScene().buildIndex != GameScene)
+            if (_mainGameSceneSetupData == null)
             {
                 return false;
             }
@@ -195,8 +190,6 @@ namespace BeatSaberTweaks
             if (scene.buildIndex == MainScene)
             {
                 _mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
-                //_howToPlayViewController = ReflectionUtil.GetPrivateField<VRUIViewController>(_mainMenuViewController, "_howToPlayViewController");
-                //_releaseInfoViewController = ReflectionUtil.GetPrivateField<VRUIViewController>(_mainMenuViewController, "_releaseInfoViewController");
                 var _menuMasterViewController = Resources.FindObjectsOfTypeAll<StandardLevelSelectionFlowCoordinator>().First();
                 prompt = ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(_menuMasterViewController, "_simpleDialogPromptViewController");
 
@@ -204,9 +197,56 @@ namespace BeatSaberTweaks
                 {
                     StartCoroutine(LoadWarning());
                 }
+                NewSetup();
+            }
+        }
 
-                //SetupTweakSettings();
-                //CreateTweakSettingsButton();
+        private void NewSetup()
+        {
+            var tweaks1 = SettingsUI.CreateSubMenu("Volume Tweaks");
+            SettingsUI.AddListSetting<NoteHitVolumeSettingsController>("Note Hit Volume", tweaks1);
+            SettingsUI.AddListSetting<NoteMissVolumeSettingsController>("Note Miss Volume", tweaks1);
+            SettingsUI.AddListSetting<MenuBGVolumeSettingsController>("Menu BG Music Volume", tweaks1);
+
+            var tweaks2 = SettingsUI.CreateSubMenu("Interface Tweaks");
+            SettingsUI.AddToggleSetting<MoveEnergyBarSettingsController>("Move Energy Bar", tweaks2);
+            SettingsUI.AddToggleSetting<MoveScoreSettingsController>("Move Score", tweaks2);
+            SettingsUI.AddToggleSetting<ShowClockSettingsController>("Show Clock", tweaks2);
+            SettingsUI.AddToggleSetting<Use24hrClockSettingsController>("24hr Clock", tweaks2);
+
+            var tweaks3 = SettingsUI.CreateSubMenu("Party Mode Tweaks");
+            SettingsUI.AddToggleSetting<NoArrowsSettingsController>("No Arrows", tweaks3);
+            SettingsUI.AddToggleSetting<OneColourSettingsController>("One Color", tweaks3);
+            SettingsUI.AddToggleSetting<RemoveBombsSettingsController>("Remove Bombs", tweaks3);
+            SettingsUI.AddListSetting<SongSpeedSettingsController>("Song Speed", tweaks3);
+            //CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", tweaks3);
+            //CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", tweaks3);
+
+            if (CameraPlusInstalled)
+            {
+                var tweaks4 = SettingsUI.CreateSubMenu("Camera Plus");
+                SettingsUI.AddToggleSetting<CameraPlusThirdPersonSettingsController>("Third Person Camera", tweaks4);
+            }
+
+            if (HiddenNotesInstalled)
+            {
+                var tweaks5 = SettingsUI.CreateSubMenu("Hidden Notes");
+                SettingsUI.AddToggleSetting<HiddenNotesSettingsController>("Hidden Notes", tweaks5);
+            }
+        }
+
+        void LogComponents(Transform t, string prefix)
+        {
+            Console.WriteLine(prefix + ">" + t.name);
+
+            //foreach (var comp in t.GetComponents<MonoBehaviour>())
+            //{
+            //    Console.WriteLine(prefix + "-->" + comp.GetType());
+            //}
+
+            foreach (Transform child in t)
+            {
+                LogComponents(child, prefix + "=");
             }
         }
 
@@ -268,151 +308,6 @@ namespace BeatSaberTweaks
                 Console.WriteLine("NO");
             }
             viewController.DismissModalViewController(null, false);
-        }
-
-        void SetupTweakSettings()
-        {
-            var origianlSettingsObject = Resources.FindObjectsOfTypeAll<SettingsViewController>().FirstOrDefault();
-
-            var tweakSettingsObject = Instantiate(origianlSettingsObject.gameObject, origianlSettingsObject.transform.parent);
-            tweakSettingsObject.SetActive(false);
-            tweakSettingsObject.name = "Tweak Settings View Controller";
-
-            var originalSettings = tweakSettingsObject.GetComponent<SettingsViewController>();
-            tweakSettings = tweakSettingsObject.AddComponent<TweakSettingsViewController>();
-            DestroyImmediate(originalSettings);
-
-            //left = CopyScreens(origianlSettingsObject, "Left Screen", _howToPlayViewController.transform.parent);
-            //right = CopyScreens(origianlSettingsObject, "Right Screen", _releaseInfoViewController.transform.parent);
-
-            //tweakSettings._leftSettings = left;
-            //tweakSettings._rightSettings = right;
-
-            //CleanScreen(tweakSettings);
-            //CleanScreen(left);
-            //CleanScreen(right);
-
-            //SetTitle(tweakSettings, "TWEAKS");
-            //SetTitle(left, "PARTY MODE ONLY");
-            //SetTitle(right, "TWEAKS");
-
-            //Transform mainContainer = tweakSettingsObject.transform.Find("SettingsContainer");
-            //Transform leftContainer = left.transform.Find("SettingsContainer");
-            //Transform rightContainer = right.transform.Find("SettingsContainer");
-            //SetRectYPos(mainContainer.GetComponent<RectTransform>(), 6);
-            //SetRectYPos(leftContainer.GetComponent<RectTransform>(), 0);
-            //SetRectYPos(rightContainer.GetComponent<RectTransform>(), 0);
-
-            //CopyListSettingsController<NoteHitVolumeSettingsController>("Note Hit Volume", mainContainer);
-            //CopyListSettingsController<NoteMissVolumeSettingsController>("Note Miss Volume", mainContainer);
-            //CopyListSettingsController<MenuBGVolumeSettingsController>("Menu BG Music Volume", mainContainer);
-
-            //CopySwitchSettingsController<MoveEnergyBarSettingsController>("Move Energy Bar", rightContainer);
-            //CopySwitchSettingsController<MoveScoreSettingsController>("Move Score", rightContainer);
-            //CopySwitchSettingsController<ShowClockSettingsController>("Show Clock", rightContainer);
-            //CopySwitchSettingsController<Use24hrClockSettingsController>("24hr Clock", rightContainer);
-
-            //CopySwitchSettingsController<NoArrowsSettingsController>("No Arrows", leftContainer);
-            //CopySwitchSettingsController<OneColourSettingsController>("One Color", leftContainer);
-            //CopySwitchSettingsController<RemoveBombsSettingsController>("Remove Bombs", leftContainer);
-            //CopyListSettingsController<SongSpeedSettingsController>("Song Speed", leftContainer);
-            //CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", leftContainer);
-            //CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", leftContainer);
-
-            //if (CameraPlusInstalled)
-            //{
-            //    CopySwitchSettingsController<CameraPlusThirdPersonSettingsController>("Third Person Camera", mainContainer);
-            //}
-
-            //if (HiddenNotesInstalled)
-            //{
-            //    CopySwitchSettingsController<HiddenNotesSettingsController>("Hidden Notes", mainContainer);
-            //}
-
-        }
-
-        void SetRectYPos(RectTransform rect, float y)
-        {
-            var pos = rect.anchoredPosition;
-            pos.y = y;
-            rect.anchoredPosition = pos;
-        }
-
-        void CleanScreen(VRUIViewController screen)
-        {
-            var container = screen.transform.Find("SettingsContainer");
-            var tempList = container.Cast<Transform>().ToList();
-            foreach (var child in tempList)
-            {
-                DestroyImmediate(child.gameObject);
-            }
-        }
-
-        void SetTitle(VRUIViewController screen, string title)
-        {
-            var titleTransform = screen.transform.Find("Title");
-            titleTransform.GetComponent<TextMeshProUGUI>().text = title;
-            SetRectYPos(titleTransform.GetComponent<RectTransform>(), -2);
-        }
-
-        VRUIViewController CopyScreens(SettingsViewController view, string name, Transform parent)
-        {
-            var origianlScreen = ReflectionUtil.GetPrivateField<VRUIViewController>(view, "_advancedGraphicsSettingsViewController");
-            var tweakScreen = Instantiate(origianlScreen.gameObject, parent);
-            tweakScreen.name = name;
-
-            var originalSettings = tweakScreen.GetComponent<VRUIViewController>();
-            return originalSettings;
-        }
-
-        void CopyListSettingsController<T>(string name, Transform container) where T : ListSettingsController
-        {
-            var volumeSettings = Resources.FindObjectsOfTypeAll<VolumeSettingsController>().FirstOrDefault();
-            GameObject newSettingsObject = Instantiate(volumeSettings.gameObject, container);
-            newSettingsObject.name = name;
-
-            VolumeSettingsController volume = newSettingsObject.GetComponent<VolumeSettingsController>();
-            T newListSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(ListSettingsController), typeof(T), newSettingsObject);
-            DestroyImmediate(volume);
-
-            newSettingsObject.GetComponentInChildren<TMP_Text>().text = name;
-            tweakSettings.AddController(newListSettingsController);
-        }
-
-        void CopySwitchSettingsController<T>(string name, Transform container) where T : SwitchSettingsController
-        {
-            var volumeSettings = Resources.FindObjectsOfTypeAll<WindowModeSettingsController>().FirstOrDefault();
-            GameObject newSettingsObject = Instantiate(volumeSettings.gameObject, container);
-            newSettingsObject.name = name;
-
-            WindowModeSettingsController volume = newSettingsObject.GetComponent<WindowModeSettingsController>();
-            T newListSettingsController = (T)ReflectionUtil.CopyComponent(volume, typeof(SwitchSettingsController), typeof(T), newSettingsObject);
-            DestroyImmediate(volume);
-
-            newSettingsObject.GetComponentInChildren<TMP_Text>().text = name;
-            tweakSettings.AddController(newListSettingsController);
-        }
-
-        private void CreateTweakSettingsButton()
-        {
-            var settingsButton = _mainMenuViewController.transform.Find("SettingsButton").gameObject;
-
-            Console.WriteLine(settingsButton.name);
-
-            GameObject btnGo = Instantiate(settingsButton, settingsButton.transform.parent, false);
-            btnGo.name = "TweaksButton";
-            Button btn = btnGo.GetComponent<Button>();
-            (btn.transform as RectTransform).anchoredPosition = new Vector2(-36f, 7f);
-            (btn.transform as RectTransform).sizeDelta = new Vector2(28f, 10f);
-            btn.GetComponentInChildren<TextMeshProUGUI>().text = "Tweaks";
-            DestroyImmediate(btn.GetComponent<GameEventOnUIButtonClick>());
-            btn.onClick = new Button.ButtonClickedEvent();
-            btn.onClick.AddListener(ShowTweakSettings);
-        }
-
-        public void ShowTweakSettings()
-        {
-            _mainMenuViewController.PresentModalViewController(tweakSettings, null, false);
         }
     }
 }
