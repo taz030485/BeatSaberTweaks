@@ -24,7 +24,7 @@ namespace BeatSaberTweaks
             tweakedSettingsControllers.Add(controller);
         }
 
-#if true    
+#if false    
         // Old version
         private bool _firstTimeActivated = true;
         protected override void DidActivate()

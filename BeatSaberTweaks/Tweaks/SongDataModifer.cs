@@ -31,8 +31,8 @@ namespace BeatSaberTweaks
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
 
-                MethodInfo original = typeof(GameSongController).GetMethod("CreateTransformedSongData", BindingFlags.Public | BindingFlags.Instance);
-                MethodInfo modified = typeof(SongDataModifer).GetMethod(nameof(CreateTransformedSongData), BindingFlags.Public | BindingFlags.Instance);
+                MethodInfo original = typeof(BeatDataTransformHelper).GetMethod("CreateTransformedBeatmapData", BindingFlags.Public | BindingFlags.Static);
+                MethodInfo modified = typeof(SongDataModifer).GetMethod(nameof(CreateTransformedBeatmapData), BindingFlags.Public | BindingFlags.Static);
                 songDataRedirect = new Redirection(original, modified, true);
             }
             else
@@ -41,63 +41,53 @@ namespace BeatSaberTweaks
             }
         }
 
-        public virtual SongData CreateTransformedSongData(SongData songData, GameplayOptions gameplayOptions, GameplayMode gameplayMode)
+        static bool ShouldApplyModifers()
         {
-            SongData songData2 = songData;
-
-            if (gameplayMode == GameplayMode.PartyStandard)
-            {
-                songData2 = ApplyModifiers(songData2);
-            }
-            else
-            {
-                if (gameplayMode == GameplayMode.SoloNoArrows)
-                {
-                    songData2 = SongDataNoArrowsTransform.CreateTransformedData(songData2);
-                }   
-            }
-
-            if (gameplayOptions.mirror)
-            {
-                songData2 = SongDataMirrorTransform.CreateTransformedData(songData2);
-            }
-
-            if (songData2 == songData)
-            {
-                songData2 = songData.GetCopy();
-            }
-            return songData2;
+            return TweakManager.IsPartyMode() && (Settings.RemoveBombs || Settings.OneColour || Settings.NoArrows);
         }
 
-        public static SongData ApplyModifiers(SongData songData)
+        public static BeatmapData CreateTransformedBeatmapData(BeatmapData beatmapData, GameplayOptions gameplayOptions, GameplayMode gameplayMode)
         {
-            SongLineData[] songLinesData = songData.SongLinesData;
-            int[] array = new int[songLinesData.Length];
+            BeatmapData newData = (BeatmapData)songDataRedirect.InvokeOriginal(null, beatmapData, gameplayOptions, gameplayMode);
+
+            if (ShouldApplyModifers())
+            {
+                Console.WriteLine("Applying BeatMap modifiers.");
+                newData = ApplyModifiers(newData);
+            }
+
+            return newData;
+        }
+
+        public static BeatmapData ApplyModifiers(BeatmapData beatmapData)
+        {
+            BeatmapLineData[] beatmapLinesData = beatmapData.beatmapLinesData;
+            int[] array = new int[beatmapLinesData.Length];
             for (int i = 0; i < array.Length; i++)
             {
                 array[i] = 0;
             }
             int num = 0;
-            for (int j = 0; j < songLinesData.Length; j++)
+            for (int j = 0; j < beatmapLinesData.Length; j++)
             {
-                num += songLinesData[j].songObjectsData.Length;
+                num += beatmapLinesData[j].beatmapObjectsData.Length;
             }
-            List<SongObjectData> list = new List<SongObjectData>(num);
+            List<BeatmapObjectData> list = new List<BeatmapObjectData>(num);
             bool flag;
             do
             {
                 flag = false;
                 float num2 = 999999f;
                 int num3 = 0;
-                for (int k = 0; k < songLinesData.Length; k++)
+                for (int k = 0; k < beatmapLinesData.Length; k++)
                 {
-                    SongObjectData[] songObjectsData = songLinesData[k].songObjectsData;
+                    BeatmapObjectData[] beatmapObjectsData = beatmapLinesData[k].beatmapObjectsData;
                     int num4 = array[k];
-                    if (num4 < songObjectsData.Length)
+                    if (num4 < beatmapObjectsData.Length)
                     {
                         flag = true;
-                        SongObjectData songObjectData = songObjectsData[num4];
-                        float time = songObjectData.time;
+                        BeatmapObjectData beatmapObjectData = beatmapObjectsData[num4];
+                        float time = beatmapObjectData.time;
                         if (time < num2)
                         {
                             num2 = time;
@@ -107,63 +97,65 @@ namespace BeatSaberTweaks
                 }
                 if (flag)
                 {
-                    list.Add(songLinesData[num3].songObjectsData[array[num3]].GetCopy());
+                    var note = beatmapLinesData[num3].beatmapObjectsData[array[num3]].GetCopy();
+                    if (Settings.RemoveBombs && !IsBomb(note))
+                    {
+                        list.Add(beatmapLinesData[num3].beatmapObjectsData[array[num3]].GetCopy());
+                    }
                     array[num3]++;
                 }
             }
             while (flag);
-
-            ModifyObjects(list);
-            list.RemoveAll(item => item == null);
-
-            int[] array2 = new int[songLinesData.Length];
+            ModifyObjects(list, beatmapData.beatmapLinesData.Length);
+            int[] array2 = new int[beatmapLinesData.Length];
             for (int l = 0; l < list.Count; l++)
             {
-                SongObjectData songObjectData2 = list[l];
-                array2[songObjectData2.lineIndex]++;
+                BeatmapObjectData beatmapObjectData2 = list[l];
+                array2[beatmapObjectData2.lineIndex]++;
             }
-            SongLineData[] array3 = new SongLineData[songLinesData.Length];
-            for (int m = 0; m < songLinesData.Length; m++)
+            BeatmapLineData[] array3 = new BeatmapLineData[beatmapLinesData.Length];
+            for (int m = 0; m < beatmapLinesData.Length; m++)
             {
-                array3[m] = new SongLineData();
-                array3[m].songObjectsData = new SongObjectData[array2[m]];
+                array3[m] = new BeatmapLineData();
+                array3[m].beatmapObjectsData = new BeatmapObjectData[array2[m]];
                 array[m] = 0;
             }
             for (int n = 0; n < list.Count; n++)
             {
-                SongObjectData songObjectData3 = list[n];
-                int lineIndex = songObjectData3.lineIndex;
-                array3[lineIndex].songObjectsData[array[lineIndex]] = songObjectData3;
+                BeatmapObjectData beatmapObjectData3 = list[n];
+                int lineIndex = beatmapObjectData3.lineIndex;
+                array3[lineIndex].beatmapObjectsData[array[lineIndex]] = beatmapObjectData3;
                 array[lineIndex]++;
             }
-
-
-            SongEventData[] array4 = new SongEventData[songData.SongEventData.Length];
-
-            if (songData.SongEventData.Length == 0)
+            BeatmapEventData[] array4 = new BeatmapEventData[beatmapData.beatmapEventData.Length];
+            for (int num5 = 0; num5 < beatmapData.beatmapEventData.Length; num5++)
             {
-                Console.WriteLine("No event data");
+                BeatmapEventData beatmapEventData = beatmapData.beatmapEventData[num5];
+                array4[num5] = beatmapEventData.GetCopy();
             }
-            else
-            {
-                for (int num5 = 0; num5 < songData.SongEventData.Length; num5++)
-                {
-                    SongEventData songEventData = songData.SongEventData[num5];
-                    array4[num5] = songEventData.GetCopy();
-                }
-            }
-
-            return new SongData(songData.BeatsPerMinute, Settings.OverrideJumpSpeed ? Settings.NoteJumpSpeed :  songData.NoteJumpSpeed, array3, array4);
+            return new BeatmapData(array3, array4);
+            //return new SongData(songData.BeatsPerMinute, Settings.OverrideJumpSpeed ? Settings.NoteJumpSpeed : songData.NoteJumpSpeed, array3, array4);
         }
 
-        private static void ModifyObjects(List<SongObjectData> songObjects)
+        private static bool IsBomb(BeatmapObjectData beatmapObjectData)
         {
-            for (int i = 0; i < songObjects.Count; i++)
+            if (beatmapObjectData.beatmapObjectType == BeatmapObjectType.Note)
             {
-                SongObjectData songObjectData = songObjects[i];
-                if (songObjectData.songObjectType == SongObjectData.SongObjectTypeEnum.Note)
+                NoteData obstacleData = beatmapObjectData as NoteData;
+                return obstacleData.noteType == NoteType.Bomb;
+            }
+            return false;
+        }
+
+        private static void ModifyObjects(List<BeatmapObjectData> beatmapObjects, int beatmapLineCount)
+        {
+            for (int i = 0; i < beatmapObjects.Count; i++)
+            {
+                BeatmapObjectData beatmapObjectData = beatmapObjects[i];
+                beatmapObjectData.MirrorLineIndex(beatmapLineCount);
+                if (beatmapObjectData.beatmapObjectType == BeatmapObjectType.Note)
                 {
-                    NoteData noteData = songObjectData as NoteData;
+                    NoteData noteData = beatmapObjectData as NoteData;
                     if (noteData != null)
                     {
                         if (Settings.NoArrows)
@@ -171,32 +163,12 @@ namespace BeatSaberTweaks
                             noteData.SetNoteToAnyCutDirection();
                         }
 
-                        if (Settings.OneColour && noteData.noteType == NoteData.NoteType.NoteA)
+                        if (Settings.OneColour && noteData.noteType == NoteType.NoteA)
                         {
                             noteData.SwitchNoteType();
                         }
-
-                        if (Settings.RemoveBombs && noteData.noteType == NoteData.NoteType.Bomb)
-                        {
-                            songObjects[i] = null;
-                        }
                     }
                 }
-                
-                //if (songObjectData.songObjectType == SongObjectData.SongObjectTypeEnum.Obstacle)
-                //{
-                //    ObstacleData obstacleData = songObjectData as ObstacleData;
-                //    if (obstacleData != null)
-                //    {
-                //        if (obstacleData.obstacleType == ObstacleType.Top)
-                //        {
-                //        if (Settings.RemoveHighWalls)
-                //        {
-                //            songObjects[i] = null;
-                //        }
-                //        }
-                //    }
-                //}
             }
         }
     }

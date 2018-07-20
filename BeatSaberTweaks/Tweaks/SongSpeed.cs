@@ -76,7 +76,7 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == 1)
+            if (scene.buildIndex == TweakManager.MainScene)
             {
                 if (SettingsObject == null)
                 {
@@ -93,7 +93,7 @@ namespace BeatSaberTweaks
                     DontDestroyOnLoad(SettingsObject);
                 }
             }
-            else if (scene.buildIndex == 4)
+            else if (scene.buildIndex == TweakManager.GameScene)
             {
                 Enabled = TweakManager.IsPartyMode();
 

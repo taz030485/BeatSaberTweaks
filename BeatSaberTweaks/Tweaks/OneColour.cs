@@ -36,7 +36,7 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == 1)
+            if (scene.buildIndex == TweakManager.MainScene)
             {
                 if (model == null)
                 {

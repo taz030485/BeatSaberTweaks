@@ -52,7 +52,7 @@ namespace BeatSaberTweaks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == 4)
+            if (scene.buildIndex == TweakManager.GameScene)
             {
                 bool pooled = false;
                 if (noteCutSoundEffect == null)

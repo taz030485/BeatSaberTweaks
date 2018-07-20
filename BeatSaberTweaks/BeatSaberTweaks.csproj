@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BeatSaberTweaks</RootNamespace>
     <AssemblyName>BeatSaberTweaks</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -42,7 +42,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Hidden_Notes">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\Hidden_Notes.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins Unused\Hidden_Notes.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="IllusionInjector">
@@ -107,7 +107,6 @@
     <Compile Include="ViewControllers\NoteJumpSpeedSettingsController.cs" />
     <Compile Include="ViewControllers\OverrideJumpSpeedSettingsController.cs" />
     <Compile Include="ViewControllers\RemoveBombsSettingsController.cs" />
-    <Compile Include="ViewControllers\RemoveHighWallsSettingsController.cs" />
     <Compile Include="ViewControllers\OneColourSettingsController.cs" />
     <Compile Include="ViewControllers\NoArrowsSettingsController.cs" />
     <Compile Include="ViewControllers\MoveScoreSettingsController.cs" />

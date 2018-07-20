@@ -5,19 +5,29 @@ Moveable energy bar
 Change volume of note hits and misses  
 Change volume of menu background music  
 Move Score (Same as Rolo's Score Mover plugin)  
-No Arrows (Party)  
-One Color (Party)  
-Remove Bombs (Party)  
-Remove High Walls/Overhead Obstacles (Party)  
+X: No Arrows (Party)  
+X: One Color (Party)  
+X: Remove Bombs (Party)  
 Change Song Speed (Party) (Same as PracticePlugin, but without needing No Fail)  
-Override Note Speed (Party) (The speed the note move towards you)  
+X: Override Note Speed (Party) (The speed the note move towards you)  
 Toggle third person camera (If CameraPlus is installed)  
 
 (Features marked 'Party' will work in Party Mode only as to not mess with online leaderboards)  
 **Known Issues:**  
+No UI for options yet
+Features marked with an X broke with the new updated and will be fixed later
 Vibration is disabled when One Color is turned on, since one controller will vibrate when the other hits notes.  
 
-# Changes
+# Changes  
+3.1  
+- Updated for new Beat Saber version  
+- UI has not yet been fixed, change options in Tweaks.cfg directly  
+- Disabled "No Arrows" (Will add back when fixed)  
+- Disabled "One Color"  (Will add back when fixed)  
+- Disabled "Remove Bombs"  (Will add back when fixed)  
+- Disabled "Override Note Speed" (Will add back when fixed)
+- Removed "Remove High Walls/Overhead Obstacles" as this is now built in
+
 3.0
 - Move Score (Same as Rolo's Score Mover plugin)  
 - No Arrows (Party)  
