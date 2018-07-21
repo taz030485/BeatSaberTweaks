@@ -29,6 +29,8 @@ namespace BeatSaberTweaks
         public const int MainScene = 1;
         public const int GameScene = 5;
 
+        float carTime = 0;
+
         public static void OnLoad()
         {
             if (Instance != null) return;
@@ -92,49 +94,78 @@ namespace BeatSaberTweaks
         {
             if (SceneManager.GetActiveScene().buildIndex == MainScene)
             {
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (_mainMenuViewController.childViewController == null &&
+                    Input.GetKey((KeyCode)ConInput.Vive.LeftTrigger) &&
+                    Input.GetKey((KeyCode)ConInput.Vive.RightTrigger))
                 {
-                    //string path = "Testing";
-                    //Console.WriteLine(path);
-                    //prompt.didFinishEvent += Prompt_didFinishEvent;
-                    //prompt.Init("Test Prompt", path, "ON", "OFF");
-                    //_mainMenuViewController.PresentModalViewController(prompt, null, false);
-                    NewSetup();
+                    carTime += Time.deltaTime;
+                    if (carTime > 5.0f)
+                    {
+                        carTime = 0;
+                        prompt.didFinishEvent += CarEvent;
+                        prompt.Init("Flying Cars", "Turn Flying Cars?", "ON", "OFF");
+                        _mainMenuViewController.PresentModalViewController(prompt, null, false);
+                    }
+                }
+                else
+                {
+                    carTime = 0;
                 }
 
-                if (_mainMenuViewController.childViewController != null)
-                {
-                    return;
-                }
+                //if (Input.GetKeyDown(KeyCode.Space))
+                //{
+                //    //string path = "Testing";
+                //    //Console.WriteLine(path);
+                //    //prompt.didFinishEvent += Prompt_didFinishEvent;
+                //    //prompt.Init("Test Prompt", path, "ON", "OFF");
+                //    //_mainMenuViewController.PresentModalViewController(prompt, null, false);
+                //    NewSetup();
+                //}
 
-                if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
-                    Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
-                    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
-                {
-                    prompt.didFinishEvent += OneColorEvent;
-                    prompt.Init("One Color", "Turn One color mode on?", "ON", "OFF");
-                    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                    return;
-                }
+                //if (_mainMenuViewController.childViewController != null)
+                //{
+                //    return;
+                //}
 
-                if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
-                    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
-                {
-                    prompt.didFinishEvent += RemoveBombsEvent;
-                    prompt.Init("Remove Bombs", "Turn Remove Bombs mode on?", "ON", "OFF");
-                    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                    return;
-                }
+                //if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
+                //    Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
+                //    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
+                //{
+                //    prompt.didFinishEvent += OneColorEvent;
+                //    prompt.Init("One Color", "Turn One color mode on?", "ON", "OFF");
+                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
+                //    return;
+                //}
 
-                if (Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
-                    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
-                {
-                    prompt.didFinishEvent += NoArrowsEvent;
-                    prompt.Init("No Arrows", "Turn No Arrows mode on?", "ON", "OFF");
-                    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                    return;
-                }
+                //if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
+                //    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
+                //{
+                //    prompt.didFinishEvent += RemoveBombsEvent;
+                //    prompt.Init("Remove Bombs", "Turn Remove Bombs mode on?", "ON", "OFF");
+                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
+                //    return;
+                //}
+
+                //if (Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
+                //    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
+                //{
+                //    prompt.didFinishEvent += NoArrowsEvent;
+                //    prompt.Init("No Arrows", "Turn No Arrows mode on?", "ON", "OFF");
+                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
+                //    return;
+                //}
             }
+        }
+
+        private void CarEvent(SimpleDialogPromptViewController viewController, bool ok)
+        {
+            viewController.didFinishEvent -= NoArrowsEvent;
+            if (viewController.isRebuildingHierarchy)
+            {
+                return;
+            }
+            FlyingCar.startflyingCars = ok;
+            viewController.DismissModalViewController(null, false);
         }
 
         private void NoArrowsEvent(SimpleDialogPromptViewController viewController, bool ok)

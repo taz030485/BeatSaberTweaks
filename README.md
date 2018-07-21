@@ -11,16 +11,28 @@ Plugin for Beat Saber containing the following tweaks:
 - One Color (Party)  
 - Remove Bombs (Party)  
 - X: Override Note Speed (Party) (The speed the note move towards you)  
+- While on the Main menu screen hold both triggers for 5 seconds ;)  
   
 (Features marked 'Party' will work in Party Mode only as to not mess with online leaderboards)  
 **Known Issues:**  
 Features marked with an X broke with the new updated and will be fixed later  
-Vibration is disabled when One Color is turned on, since one controller will vibrate when the other hits notes.  
+Vibration is disabled when One Color is turned on, since one controller will vibrate when the other hits notes  
   
 # Usage  
 Turn anything on or off in the Tweaks sections of the Settings menu.  
+The following options are changed by editing Tweaks.cfg  
+- Clock Font Size  
+- Clock Position  
+- Clock Rotation  
+- Energy Bar Height  
+- Score Size  
+- Score Position  
   
 # Changes  
+3.2.1  
+- Score position and size can now be changed in Tweaks.cfg  
+- While on the Main menu screen hold both triggers for 5 seconds  
+  
 3.2  
 - Updated GUI  
 - Re-enabled "No Arrows"  

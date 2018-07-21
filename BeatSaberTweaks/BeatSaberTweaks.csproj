@@ -124,7 +124,6 @@
     <Compile Include="Settings.cs" />
     <Compile Include="TweakManager.cs" />
     <Compile Include="ViewControllers\MoveEnergyBarSettingsController.cs" />
-    <Compile Include="ViewControllers\TweakSettingsViewController.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -35,9 +35,9 @@ namespace BeatSaberTweaks
             if (Settings.MoveScore && scene.buildIndex == TweakManager.GameScene)
             {
                 var scorePanel = Resources.FindObjectsOfTypeAll<ScoreUIController>().FirstOrDefault();
-                scorePanel.transform.position = new Vector3(3.3f, 2.5f, 7.0f);
+                scorePanel.transform.position = Settings.ScorePosition;
                 scorePanel.transform.rotation = Quaternion.identity;
-                scorePanel.transform.localScale *= 4;
+                scorePanel.transform.localScale *= Settings.ScoreSize;
             }
         }
     }

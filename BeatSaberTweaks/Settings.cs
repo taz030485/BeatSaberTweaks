@@ -60,6 +60,14 @@ namespace BeatSaberTweaks
         bool moveScore = false;
         public static bool MoveScore { get => instance.moveScore; set => instance.moveScore = value; }
 
+        [SerializeField]
+        float scoreSize = 4.0f;
+        public static float ScoreSize { get => instance.scoreSize; set => instance.scoreSize = value; }
+
+        [SerializeField]
+        Vector3 scorePosition = new Vector3(3.3f, 2.5f, 7.0f);
+        public static Vector3 ScorePosition { get => instance.scorePosition; set => instance.scorePosition = value; }
+
         bool noArrows = false;
         public static bool NoArrows { get => instance.noArrows; set => instance.noArrows = value; }
 
