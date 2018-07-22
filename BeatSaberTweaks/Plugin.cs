@@ -8,7 +8,7 @@ namespace BeatSaberTweaks
     public class Plugin : IPlugin
     {
         public string Name => "Beat Saber Tweaks";
-        public string Version => "3.2.1";   
+        public string Version => "3.3";   
     
         private bool _init = false;
 

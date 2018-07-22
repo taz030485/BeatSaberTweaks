@@ -10,6 +10,7 @@ using VRUI;
 using VRUIControls;
 using TMPro;
 using IllusionPlugin;
+using BeatSaberUI;
 
 namespace BeatSaberTweaks
 {
@@ -23,6 +24,7 @@ namespace BeatSaberTweaks
 
         static MainGameSceneSetupData _mainGameSceneSetupData = null;
 
+        bool SettingsUIInstalled = false;
         bool CameraPlusInstalled = false;
         bool HiddenNotesInstalled = false;
 
@@ -73,6 +75,11 @@ namespace BeatSaberTweaks
                     {
                         HiddenNotesInstalled = true;
                     }
+
+                    if (plugin.Name == "SettingsUI")
+                    {
+                        SettingsUIInstalled = true;
+                    }
                 }
 
                 MoveEnergyBar.OnLoad(transform);
@@ -111,93 +118,17 @@ namespace BeatSaberTweaks
                 {
                     carTime = 0;
                 }
-
-                //if (Input.GetKeyDown(KeyCode.Space))
-                //{
-                //    //string path = "Testing";
-                //    //Console.WriteLine(path);
-                //    //prompt.didFinishEvent += Prompt_didFinishEvent;
-                //    //prompt.Init("Test Prompt", path, "ON", "OFF");
-                //    //_mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //    NewSetup();
-                //}
-
-                //if (_mainMenuViewController.childViewController != null)
-                //{
-                //    return;
-                //}
-
-                //if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
-                //    Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
-                //    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
-                //{
-                //    prompt.didFinishEvent += OneColorEvent;
-                //    prompt.Init("One Color", "Turn One color mode on?", "ON", "OFF");
-                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //    return;
-                //}
-
-                //if (Input.GetKey((KeyCode)ConInput.Vive.LeftTrackpadPress) &&
-                //    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
-                //{
-                //    prompt.didFinishEvent += RemoveBombsEvent;
-                //    prompt.Init("Remove Bombs", "Turn Remove Bombs mode on?", "ON", "OFF");
-                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //    return;
-                //}
-
-                //if (Input.GetKey((KeyCode)ConInput.Vive.RightTrackpadPress) &&
-                //    Input.GetKeyDown((KeyCode)ConInput.Vive.RightTrigger))
-                //{
-                //    prompt.didFinishEvent += NoArrowsEvent;
-                //    prompt.Init("No Arrows", "Turn No Arrows mode on?", "ON", "OFF");
-                //    _mainMenuViewController.PresentModalViewController(prompt, null, false);
-                //    return;
-                //}
             }
         }
 
         private void CarEvent(SimpleDialogPromptViewController viewController, bool ok)
         {
-            viewController.didFinishEvent -= NoArrowsEvent;
+            viewController.didFinishEvent -= CarEvent;
             if (viewController.isRebuildingHierarchy)
             {
                 return;
             }
             FlyingCar.startflyingCars = ok;
-            viewController.DismissModalViewController(null, false);
-        }
-
-        private void NoArrowsEvent(SimpleDialogPromptViewController viewController, bool ok)
-        {
-            viewController.didFinishEvent -= NoArrowsEvent;
-            if (viewController.isRebuildingHierarchy)
-            {
-                return;
-            }
-            Settings.NoArrows = ok;
-            viewController.DismissModalViewController(null, false);
-        }
-
-        private void RemoveBombsEvent(SimpleDialogPromptViewController viewController, bool ok)
-        {
-            viewController.didFinishEvent -= RemoveBombsEvent;
-            if (viewController.isRebuildingHierarchy)
-            {
-                return;
-            }
-            Settings.RemoveBombs = ok;
-            viewController.DismissModalViewController(null, false);
-        }
-
-        private void OneColorEvent(SimpleDialogPromptViewController viewController, bool ok)
-        {
-            viewController.didFinishEvent -= OneColorEvent;
-            if (viewController.isRebuildingHierarchy)
-            {
-                return;
-            }
-            Settings.OneColour = ok;
             viewController.DismissModalViewController(null, false);
         }
 
@@ -228,52 +159,104 @@ namespace BeatSaberTweaks
                 {
                     StartCoroutine(LoadWarning());
                 }
-                NewSetup();
+                
+                if (SettingsUIInstalled)
+                {
+                    CreateUI();
+                }
             }
         }
 
-        private void NewSetup()
+        private void CreateUI()
         {
-            var tweaks1 = SettingsUI.CreateSubMenu("Volume Tweaks");
-            SettingsUI.AddListSetting<NoteHitVolumeSettingsController>("Note Hit Volume", tweaks1);
-            SettingsUI.AddListSetting<NoteMissVolumeSettingsController>("Note Miss Volume", tweaks1);
-            SettingsUI.AddListSetting<MenuBGVolumeSettingsController>("Menu BG Music Volume", tweaks1);
+            var subMenu2 = SettingsUI.CreateSubMenu("Interface Tweaks");
 
-            var tweaks2 = SettingsUI.CreateSubMenu("Interface Tweaks");
-            SettingsUI.AddToggleSetting<MoveEnergyBarSettingsController>("Move Energy Bar", tweaks2);
-            SettingsUI.AddToggleSetting<MoveScoreSettingsController>("Move Score", tweaks2);
-            SettingsUI.AddToggleSetting<ShowClockSettingsController>("Show Clock", tweaks2);
-            SettingsUI.AddToggleSetting<Use24hrClockSettingsController>("24hr Clock", tweaks2);
+            var energyBar = subMenu2.AddBool("Move Energy Bar");
+            energyBar.GetValue += delegate { return Settings.MoveEnergyBar; };
+            energyBar.SetValue += delegate (bool value) { Settings.MoveEnergyBar = value; };
 
-            var tweaks3 = SettingsUI.CreateSubMenu("Party Mode Tweaks");
-            SettingsUI.AddToggleSetting<NoArrowsSettingsController>("No Arrows", tweaks3);
-            SettingsUI.AddToggleSetting<OneColourSettingsController>("One Color", tweaks3);
-            SettingsUI.AddToggleSetting<RemoveBombsSettingsController>("Remove Bombs", tweaks3);
-            SettingsUI.AddListSetting<SongSpeedSettingsController>("Song Speed", tweaks3);
+            var moveScore = subMenu2.AddBool("Move Score");
+            moveScore.GetValue += delegate { return Settings.MoveScore; };
+            moveScore.SetValue += delegate (bool value) { Settings.MoveScore = value; };
+
+            var showClock = subMenu2.AddBool("Show Clock");
+            showClock.GetValue += delegate { return Settings.ShowClock; };
+            showClock.SetValue += delegate (bool value) { Settings.ShowClock = value; };
+
+            var clock24hr = subMenu2.AddBool("24hr Clock");
+            clock24hr.GetValue += delegate { return Settings.Use24hrClock; };
+            clock24hr.SetValue += delegate (bool value) { Settings.Use24hrClock = value; };
+
+            var subMenu1 = SettingsUI.CreateSubMenu("Volume Tweaks");
+
+            var noteHit = subMenu1.AddList("Note Hit Volume", volumeValues());
+            noteHit.GetValue += delegate { return Settings.NoteHitVolume; };
+            noteHit.SetValue += delegate (float value) { Settings.NoteHitVolume = value; };
+            noteHit.FormatValue += delegate (float value) { return string.Format("{0:0.0}", value); };
+
+            var noteMiss = subMenu1.AddList("Note Miss Volume", volumeValues());
+            noteMiss.GetValue += delegate { return Settings.NoteMissVolume; };
+            noteMiss.SetValue += delegate (float value) { Settings.NoteMissVolume = value; };
+            noteMiss.FormatValue += delegate (float value) { return string.Format("{0:0.0}", value); };
+
+            var menuBG = subMenu1.AddList("Menu BG Music Volume", volumeValues());
+            menuBG.GetValue += delegate { return Settings.MenuBGVolume; };
+            menuBG.SetValue += delegate (float value) { Settings.MenuBGVolume = value; };
+            menuBG.FormatValue += delegate (float value) { return string.Format("{0:0.0}", value); };
+
+            var subMenu3 = SettingsUI.CreateSubMenu("Party Mode Tweaks");
+
+            var noArrows = subMenu3.AddBool("No Arrows");
+            noArrows.GetValue += delegate { return Settings.NoArrows; };
+            noArrows.SetValue += delegate (bool value) { Settings.NoArrows = value; };
+
+            var oneColour = subMenu3.AddBool("One Color");
+            oneColour.GetValue += delegate { return Settings.OneColour; };
+            oneColour.SetValue += delegate (bool value) { Settings.OneColour = value; };
+
+            var removeBombs = subMenu3.AddBool("Remove Bombs");
+            removeBombs.GetValue += delegate { return Settings.RemoveBombs; };
+            removeBombs.SetValue += delegate (bool value) { Settings.RemoveBombs = value; };
+
+            subMenu3.AddListSetting<SongSpeedSettingsController>("Song Speed");
+            
             //CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", tweaks3);
             //CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", tweaks3);
 
             if (CameraPlusInstalled)
             {
                 var tweaks4 = SettingsUI.CreateSubMenu("Camera Plus");
-                SettingsUI.AddToggleSetting<CameraPlusThirdPersonSettingsController>("Third Person Camera", tweaks4);
+                tweaks4.AddToggleSetting<CameraPlusThirdPersonSettingsController>("Third Person Camera");
             }
 
             if (HiddenNotesInstalled)
             {
                 var tweaks5 = SettingsUI.CreateSubMenu("Hidden Notes");
-                SettingsUI.AddToggleSetting<HiddenNotesSettingsController>("Hidden Notes", tweaks5);
+                tweaks5.AddToggleSetting<HiddenNotesSettingsController>("Hidden Notes");
             }
         }
 
-        void LogComponents(Transform t, string prefix)
+        private float[] volumeValues()
+        {
+            float startValue = 0.0f;
+            float step = 0.1f;
+            var numberOfElements = 11;
+            var values = new float[numberOfElements];
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = startValue + step * i;
+            }
+            return values;
+        }
+
+        public static void LogComponents(Transform t, string prefix)
         {
             Console.WriteLine(prefix + ">" + t.name);
 
-            //foreach (var comp in t.GetComponents<MonoBehaviour>())
-            //{
-            //    Console.WriteLine(prefix + "-->" + comp.GetType());
-            //}
+            foreach (var comp in t.GetComponents<MonoBehaviour>())
+            {
+                Console.WriteLine(prefix + "-->" + comp.GetType());
+            }
 
             foreach (Transform child in t)
             {
