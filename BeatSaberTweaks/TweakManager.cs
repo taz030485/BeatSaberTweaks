@@ -76,7 +76,7 @@ namespace BeatSaberTweaks
                         HiddenNotesInstalled = true;
                     }
 
-                    if (plugin.Name == "SettingsUI")
+                    if (plugin.Name == "BeatSaberUI")
                     {
                         SettingsUIInstalled = true;
                     }
