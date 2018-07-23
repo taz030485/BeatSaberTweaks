@@ -16,7 +16,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -36,6 +36,9 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="BeatSaberUI">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberUI.dll</HintPath>
     </Reference>
     <Reference Include="CameraPlus">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\CameraPlus.dll</HintPath>
@@ -100,22 +103,10 @@
     <Compile Include="Tweaks\ScoreMover.cs" />
     <Compile Include="Utilites\ConInput.cs" />
     <Compile Include="Utilites\Ryder.Lightweight.cs" />
-    <Compile Include="Utilites\SettingsUI.cs" />
     <Compile Include="ViewControllers\CameraPlusThirdPersonSettingsController.cs" />
-    <Compile Include="ViewControllers\MenuBGVolumeSettingsController.cs" />
     <Compile Include="ViewControllers\HiddenNotesSettingsController.cs" />
     <Compile Include="ViewControllers\SongSpeedSettingsController.cs" />
-    <Compile Include="ViewControllers\NoteJumpSpeedSettingsController.cs" />
-    <Compile Include="ViewControllers\OverrideJumpSpeedSettingsController.cs" />
-    <Compile Include="ViewControllers\RemoveBombsSettingsController.cs" />
-    <Compile Include="ViewControllers\OneColourSettingsController.cs" />
-    <Compile Include="ViewControllers\NoArrowsSettingsController.cs" />
-    <Compile Include="ViewControllers\MoveScoreSettingsController.cs" />
-    <Compile Include="ViewControllers\Use24hrClockSettingsController.cs" />
-    <Compile Include="ViewControllers\ShowClockSettingsController.cs" />
-    <Compile Include="ViewControllers\NoteHitVolumeSettingsController.cs" />
     <Compile Include="Tweaks\InGameClock.cs" />
-    <Compile Include="ViewControllers\NoteMissVolumeSettingsController.cs" />
     <Compile Include="Tweaks\MoveEnergyBar.cs" />
     <Compile Include="Tweaks\NoteHitVolume.cs" />
     <Compile Include="Plugin.cs" />
@@ -123,7 +114,6 @@
     <Compile Include="Utilites\ReflectionUtil.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TweakManager.cs" />
-    <Compile Include="ViewControllers\MoveEnergyBarSettingsController.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

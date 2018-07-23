@@ -14,6 +14,9 @@ Plugin for Beat Saber containing the following tweaks:
 - While on the Main menu screen hold both triggers for 5 seconds ;)  
   
 (Features marked 'Party' will work in Party Mode only as to not mess with online leaderboards)  
+  
+# **Requires BeatSaberUI plugin**  
+  
 **Known Issues:**  
 Features marked with an X broke with the new updated and will be fixed later  
 Vibration is disabled when One Color is turned on, since one controller will vibrate when the other hits notes  
@@ -29,6 +32,10 @@ The following options are changed by editing Tweaks.cfg
 - Score Position  
   
 # Changes  
+3.3  
+- Requires BeatSaberUI plugin to show config UI  
+- Fixed stuttering when not changing song speed
+
 3.2.1  
 - Score position and size can now be changed in Tweaks.cfg  
 - While on the Main menu screen hold both triggers for 5 seconds  

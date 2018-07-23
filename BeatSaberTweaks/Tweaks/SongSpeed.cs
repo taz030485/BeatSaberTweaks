@@ -13,7 +13,7 @@ namespace BeatSaberTweaks
         public static SongSpeed Instance;
 
         public static GameObject SettingsObject = null;
-        private AudioTimeSyncController _audioTimeSync;
+        private static AudioTimeSyncController _audioTimeSync;
         private static AudioSource _songAudio;
         private static AudioSource _noteCutAudioSource;
 
@@ -58,6 +58,17 @@ namespace BeatSaberTweaks
             {
                 _noteCutAudioSource.pitch = newTimeScale;
             }
+
+            if (_audioTimeSync != null)
+            {
+                if (newTimeScale < 1.0f)
+                {
+                    _audioTimeSync.forcedAudioSync = true;
+                }else
+                {
+                    _audioTimeSync.forcedAudioSync = false;
+                }
+            }
         }
 
         public void Awake()
@@ -97,8 +108,9 @@ namespace BeatSaberTweaks
             {
                 Enabled = TweakManager.IsPartyMode();
 
+                if (!Enabled) return;
+
                 _audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
-                _audioTimeSync.forcedAudioSync = true;
                 _songAudio = ReflectionUtil.GetPrivateField<AudioSource>(_audioTimeSync, "_audioSource");
 
                 var noteCutSoundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
