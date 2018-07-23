@@ -34,8 +34,15 @@ The following options are changed by editing Tweaks.cfg
 # Changes  
 3.3  
 - Requires BeatSaberUI plugin to show config UI  
-- Fixed stuttering when not changing song speed
 
+3.2.3  
+- Fixed controller issue for Oculus for activating FCs  
+- Tweaked clock code to only updated once per minute  
+  
+3.2.2  
+- Temporally disabled CameraPlus third person toggle  
+- Fixed stuttering when not changing song speed  
+  
 3.2.1  
 - Score position and size can now be changed in Tweaks.cfg  
 - While on the Main menu screen hold both triggers for 5 seconds  

@@ -57,31 +57,27 @@ namespace BeatSaberTweaks
 
         public void Update()
         {
+            if (ClockCanvas != null && Settings.ShowClock != ClockCanvas.activeSelf)
+            {
+                ClockCanvas.SetActive(Settings.ShowClock);
+            }
+
             timer += Time.deltaTime;
-            if (text != null && timer > 1.0f)
+            if (text != null && timer > 60.0f)
             {
                 timer = 0;
-
-                if (Settings.ShowClock != ClockCanvas.activeSelf)
+                string time;
+                if (Settings.Use24hrClock)
                 {
-                    ClockCanvas.SetActive(Settings.ShowClock);
+                    time = DateTime.Now.ToString("HH:mm");
                 }
-
-                if (ClockCanvas.activeSelf)
+                else
                 {
-                    string time;
-                    if (Settings.Use24hrClock)
-                    {
-                        time = DateTime.Now.ToString("HH:mm");
-                    }
-                    else
-                    {
-                        time = DateTime.Now.ToString("h:mm tt");
-                    }
-                    text.text = time;
+                    time = DateTime.Now.ToString("h:mm tt");
                 }
+                text.text = time;
             }
-        }   
+        }
 
         private IEnumerator GrabCanvas()
         {
