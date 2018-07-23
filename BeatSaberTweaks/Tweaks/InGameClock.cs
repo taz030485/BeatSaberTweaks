@@ -22,6 +22,8 @@ namespace BeatSaberTweaks
         private static Quaternion timeRot;
         private static float timeSize;
 
+        float timer = 0;
+
         public static void OnLoad(Transform parent)
         {
             if (Instance != null) return;
@@ -55,8 +57,11 @@ namespace BeatSaberTweaks
 
         public void Update()
         {
-            if (text != null)
+            timer += Time.deltaTime;
+            if (text != null && timer > 1.0f)
             {
+                timer = 0;
+
                 if (Settings.ShowClock != ClockCanvas.activeSelf)
                 {
                     ClockCanvas.SetActive(Settings.ShowClock);
@@ -64,17 +69,19 @@ namespace BeatSaberTweaks
 
                 if (ClockCanvas.activeSelf)
                 {
+                    string time;
                     if (Settings.Use24hrClock)
                     {
-                        text.text = DateTime.Now.ToString("HH:mm");
+                        time = DateTime.Now.ToString("HH:mm");
                     }
                     else
                     {
-                        text.text = DateTime.Now.ToString("h:mm tt");
+                        time = DateTime.Now.ToString("h:mm tt");
                     }
+                    text.text = time;
                 }
             }
-        }
+        }   
 
         private IEnumerator GrabCanvas()
         {

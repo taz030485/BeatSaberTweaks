@@ -95,8 +95,8 @@ namespace BeatSaberTweaks
             if (SceneManager.GetActiveScene().buildIndex == MainScene)
             {
                 if (_mainMenuViewController.childViewController == null &&
-                    Input.GetKey((KeyCode)ConInput.Vive.LeftTrigger) &&
-                    Input.GetKey((KeyCode)ConInput.Vive.RightTrigger))
+                   (Input.GetAxis("TriggerLeftHand") > 0.75f) &&
+                   (Input.GetAxis("TriggerRightHand") > 0.75f))
                 {
                     carTime += Time.deltaTime;
                     if (carTime > 5.0f)
@@ -253,11 +253,11 @@ namespace BeatSaberTweaks
             //CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", tweaks3);
             //CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", tweaks3);
 
-            if (CameraPlusInstalled)
-            {
-                var tweaks4 = SettingsUI.CreateSubMenu("Camera Plus");
-                SettingsUI.AddToggleSetting<CameraPlusThirdPersonSettingsController>("Third Person Camera", tweaks4);
-            }
+            //if (CameraPlusInstalled)
+            //{
+            //    var tweaks4 = SettingsUI.CreateSubMenu("Camera Plus");
+            //    SettingsUI.AddToggleSetting<CameraPlusThirdPersonSettingsController>("Third Person Camera", tweaks4);
+            //}
 
             if (HiddenNotesInstalled)
             {
