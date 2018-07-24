@@ -11,7 +11,7 @@ namespace BeatSaberTweaks
 #if NewUI
         public string Version => "3.3";
 #else
-        public string Version => "3.2.4";
+        public string Version => "3.2.5";
 #endif
 
         private bool _init = false;

@@ -32,13 +32,16 @@ The following options are changed by editing Tweaks.cfg
 - Score Position  
   
 # Changes  
-3.3 (In Progress)  
-- UPdated to use BeatSaberUI plugin to show config UI  
-
+3.3 *In Progress*  
+- Updated to use BeatSaberUI plugin to show config UI  
+  
+3.2.5  
+- Fixed settings UI not showing  
+  
 3.2.4  
 - Fixed clock briefly showing Release Notes  
 - Fixed stuttering when not changing song speed (again)  
-
+  
 3.2.3  
 - Fixed controller issue for Oculus for activating FCs  
 - Tweaked clock code to only updated once per minute  
