@@ -10,7 +10,10 @@ using VRUI;
 using VRUIControls;
 using TMPro;
 using IllusionPlugin;
+
+#if NewUI
 using BeatSaberUI;
+#endif
 
 namespace BeatSaberTweaks
 {
@@ -76,10 +79,12 @@ namespace BeatSaberTweaks
                         HiddenNotesInstalled = true;
                     }
 
+#if NewUI
                     if (plugin.Name == "BeatSaberUI")
                     {
                         SettingsUIInstalled = true;
                     }
+#endif
                 }
 
                 MoveEnergyBar.OnLoad(transform);
