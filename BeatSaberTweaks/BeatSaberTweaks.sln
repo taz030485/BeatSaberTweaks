@@ -7,14 +7,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberTweaks", "BeatSabe
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		NewUI|Any CPU = NewUI|Any CPU
+		OldUI|Any CPU = OldUI|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B23464CB-FC56-49D4-B647-C935BFE12967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B23464CB-FC56-49D4-B647-C935BFE12967}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B23464CB-FC56-49D4-B647-C935BFE12967}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B23464CB-FC56-49D4-B647-C935BFE12967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B23464CB-FC56-49D4-B647-C935BFE12967}.NewUI|Any CPU.ActiveCfg = NewUI|Any CPU
+		{B23464CB-FC56-49D4-B647-C935BFE12967}.NewUI|Any CPU.Build.0 = NewUI|Any CPU
+		{B23464CB-FC56-49D4-B647-C935BFE12967}.OldUI|Any CPU.ActiveCfg = OldUI|Any CPU
+		{B23464CB-FC56-49D4-B647-C935BFE12967}.OldUI|Any CPU.Build.0 = OldUI|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

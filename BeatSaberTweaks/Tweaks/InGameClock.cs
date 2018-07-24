@@ -66,17 +66,22 @@ namespace BeatSaberTweaks
             if (text != null && timer > 60.0f)
             {
                 timer = 0;
-                string time;
-                if (Settings.Use24hrClock)
-                {
-                    time = DateTime.Now.ToString("HH:mm");
-                }
-                else
-                {
-                    time = DateTime.Now.ToString("h:mm tt");
-                }
-                text.text = time;
+                UpdateClock();
             }
+        }
+
+        private static void UpdateClock()
+        {
+            string time;
+            if (Settings.Use24hrClock)
+            {
+                time = DateTime.Now.ToString("HH:mm");
+            }
+            else
+            {
+                time = DateTime.Now.ToString("h:mm tt");
+            }
+            text.text = time;
         }
 
         private IEnumerator GrabCanvas()
@@ -139,7 +144,11 @@ namespace BeatSaberTweaks
 
                 yield return null;
 
-                ClockCanvas.SetActive(true);
+                if (text != null)
+                {
+                    UpdateClock();
+                }
+                ClockCanvas.SetActive(Settings.ShowClock);
             }
         }
     }
