@@ -164,11 +164,14 @@ namespace BeatSaberTweaks
                 {
                     StartCoroutine(LoadWarning());
                 }
-                
+#if NewUI
                 if (SettingsUIInstalled)
                 {
                     CreateUI();
                 }
+#else
+                CreateUI();
+#endif
             }
         }
 
@@ -190,7 +193,11 @@ namespace BeatSaberTweaks
 
             var clock24hr = subMenu2.AddBool("24hr Clock");
             clock24hr.GetValue += delegate { return Settings.Use24hrClock; };
-            clock24hr.SetValue += delegate (bool value) { Settings.Use24hrClock = value; };
+            clock24hr.SetValue += delegate (bool value) 
+            {
+                Settings.Use24hrClock = value;
+                InGameClock.UpdateClock();
+            };
 
             var subMenu1 = SettingsUI.CreateSubMenu("Volume Tweaks");
 

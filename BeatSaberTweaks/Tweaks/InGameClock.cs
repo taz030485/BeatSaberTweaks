@@ -70,7 +70,7 @@ namespace BeatSaberTweaks
             }
         }
 
-        private static void UpdateClock()
+        public static void UpdateClock()
         {
             string time;
             if (Settings.Use24hrClock)
