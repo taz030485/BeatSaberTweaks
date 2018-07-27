@@ -97,7 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Tweaks\OneColour.cs" />
-    <Compile Include="Tweaks\SongSpeed.cs" />
     <Compile Include="Tweaks\SongDataModifer.cs" />
     <Compile Include="Tweaks\MenuBGVolume.cs" />
     <Compile Include="Tweaks\ScoreMover.cs" />
@@ -106,7 +105,6 @@
     <Compile Include="Utilites\SettingsUI.cs" />
     <Compile Include="ViewControllers\CameraPlusThirdPersonSettingsController.cs" />
     <Compile Include="ViewControllers\HiddenNotesSettingsController.cs" />
-    <Compile Include="ViewControllers\SongSpeedSettingsController.cs" />
     <Compile Include="Tweaks\InGameClock.cs" />
     <Compile Include="Tweaks\MoveEnergyBar.cs" />
     <Compile Include="Tweaks\NoteHitVolume.cs" />

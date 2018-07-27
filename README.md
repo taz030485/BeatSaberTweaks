@@ -34,7 +34,7 @@ The following options are changed by editing Tweaks.cfg
 3.3 *In Progress*  
 - Updated to use BeatSaberUI plugin to show config UI  
   
-3.2.5  
+3.2.6  
 - Removed speed change option (Use updated Practice Plugin)  
   
 3.2.5  
