@@ -57,8 +57,7 @@ namespace BeatSaberTweaks
                     "In Game Time",
                     "Move Energy Bar",
                     "Note Hit Volume",
-                    "Beat Saber Score Mover",
-                    "Practice Plugin"
+                    "Beat Saber Score Mover"
                 };
 
                 foreach (var plugin in IllusionInjector.PluginManager.Plugins)
@@ -94,7 +93,6 @@ namespace BeatSaberTweaks
                 MenuBGVolume.OnLoad(transform);
                 OneColour.OnLoad(transform);
                 SongDataModifer.OnLoad(transform);
-                SongSpeed.OnLoad(transform);
             }
             else
             {
@@ -229,8 +227,6 @@ namespace BeatSaberTweaks
             var removeBombs = subMenu3.AddBool("Remove Bombs");
             removeBombs.GetValue += delegate { return Settings.RemoveBombs; };
             removeBombs.SetValue += delegate (bool value) { Settings.RemoveBombs = value; };
-
-            subMenu3.AddListSetting<SongSpeedSettingsController>("Song Speed");
             
             //CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", tweaks3);
             //CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", tweaks3);

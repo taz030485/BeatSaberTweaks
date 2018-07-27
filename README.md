@@ -6,7 +6,6 @@ Plugin for Beat Saber containing the following tweaks:
 - Change volume of menu background music  
 - Move Score (Same as Rolo's Score Mover plugin)  
 - Toggle third person camera (If CameraPlus is installed)  
-- Change Song Speed (Party) (Same as PracticePlugin, but without needing No Fail)  
 - No Arrows (Party)  
 - One Color (Party)  
 - Remove Bombs (Party)  
@@ -34,6 +33,9 @@ The following options are changed by editing Tweaks.cfg
 # Changes  
 3.3 *In Progress*  
 - Updated to use BeatSaberUI plugin to show config UI  
+  
+3.2.5  
+- Removed speed change option (Use updated Practice Plugin)  
   
 3.2.5  
 - Fixed settings UI not showing  
