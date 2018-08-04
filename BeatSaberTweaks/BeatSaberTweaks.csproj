@@ -40,10 +40,6 @@
     <Reference Include="BeatSaberUI">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberUI.dll</HintPath>
     </Reference>
-    <Reference Include="CameraPlus">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\CameraPlus.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Hidden_Notes">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins Unused\Hidden_Notes.dll</HintPath>
       <Private>False</Private>
@@ -103,7 +99,6 @@
     <Compile Include="Utilites\ConInput.cs" />
     <Compile Include="Utilites\Ryder.Lightweight.cs" />
     <Compile Include="Utilites\SettingsUI.cs" />
-    <Compile Include="ViewControllers\CameraPlusThirdPersonSettingsController.cs" />
     <Compile Include="ViewControllers\HiddenNotesSettingsController.cs" />
     <Compile Include="Tweaks\InGameClock.cs" />
     <Compile Include="Tweaks\MoveEnergyBar.cs" />

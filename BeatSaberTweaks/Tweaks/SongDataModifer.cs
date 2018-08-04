@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -34,10 +35,25 @@ namespace BeatSaberTweaks
                 MethodInfo original = typeof(BeatDataTransformHelper).GetMethod("CreateTransformedBeatmapData", BindingFlags.Public | BindingFlags.Static);
                 MethodInfo modified = typeof(SongDataModifer).GetMethod(nameof(CreateTransformedBeatmapData), BindingFlags.Public | BindingFlags.Static);
                 songDataRedirect = new Redirection(original, modified, true);
+
+                SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             }
             else
             {
                 Destroy(this);
+            }
+        }
+
+        public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
+        {
+            if (TweakManager.isGameScene(scene))
+            {
+                if (Settings.OverrideJumpSpeed)
+                {
+                    var beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
+                    beatmapObjectSpawnController.SetPrivateField("_noteJumpMovementSpeed", Settings.NoteJumpSpeed);
+                    beatmapObjectSpawnController.AdjustForBeatsPerMinute();
+                }
             }
         }
 
@@ -52,7 +68,7 @@ namespace BeatSaberTweaks
 
             if (ShouldApplyModifers())
             {
-                Console.WriteLine("Applying BeatMap modifiers.");
+                //Console.WriteLine("Applying BeatMap modifiers.");
                 newData = ApplyModifiers(newData);
             }
 

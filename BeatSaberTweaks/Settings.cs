@@ -68,18 +68,23 @@ namespace BeatSaberTweaks
         Vector3 scorePosition = new Vector3(3.3f, 2.5f, 7.0f);
         public static Vector3 ScorePosition { get => instance.scorePosition; set => instance.scorePosition = value; }
 
+        [SerializeField]
         bool noArrows = false;
         public static bool NoArrows { get => instance.noArrows; set => instance.noArrows = value; }
 
+        [SerializeField]
         bool oneColour = false;
         public static bool OneColour { get => instance.oneColour; set => instance.oneColour = value; }
 
+        [SerializeField]
         bool removeBombs = false;
         public static bool RemoveBombs { get => instance.removeBombs; set => instance.removeBombs = value; }
 
+        [SerializeField]
         bool overrideJumpSpeed = false;
         public static bool OverrideJumpSpeed { get => instance.overrideJumpSpeed; set => instance.overrideJumpSpeed = value; }
 
+        [SerializeField]
         float noteJumpSpeed = 10.0f;
         public static float NoteJumpSpeed { get => instance.noteJumpSpeed; set => instance.noteJumpSpeed = value; }
 

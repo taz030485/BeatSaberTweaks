@@ -49,7 +49,7 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == TweakManager.MainScene && ClockCanvas == null)
+            if (TweakManager.isMenuScene(scene) && ClockCanvas == null)
             {
                 StartCoroutine(GrabCanvas());
             }

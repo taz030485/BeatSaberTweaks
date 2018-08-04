@@ -28,11 +28,7 @@ namespace BeatSaberTweaks
         static MainGameSceneSetupData _mainGameSceneSetupData = null;
 
         bool SettingsUIInstalled = false;
-        bool CameraPlusInstalled = false;
         bool HiddenNotesInstalled = false;
-
-        public const int MainScene = 1;
-        public const int GameScene = 5;
 
         float carTime = 0;
 
@@ -40,6 +36,16 @@ namespace BeatSaberTweaks
         {
             if (Instance != null) return;
             new GameObject("Tweak Manager").AddComponent<TweakManager>();
+        }
+
+        public static bool isMenuScene(Scene scene)
+        {
+            return (scene.name == "Menu");
+        }
+
+        public static bool isGameScene(Scene scene)
+        {
+            return (scene.name == "StandardLevel");
         }
 
         public void Awake()
@@ -66,11 +72,6 @@ namespace BeatSaberTweaks
                     {
                         warningPlugins.Add(plugin.Name);
                         Console.WriteLine("WARNING:" + plugin.Name + " is not needed anymore. Please remove it. BeatSaberTweaks has replaced it.");
-                    }
-
-                    if (plugin.Name == "CameraPlus")
-                    {
-                        CameraPlusInstalled = true;
                     }
 
                     if (plugin.Name == "Hidden Notes")
@@ -102,7 +103,7 @@ namespace BeatSaberTweaks
 
         public void Update()
         {
-            if (SceneManager.GetActiveScene().buildIndex == MainScene)
+            if (isMenuScene(SceneManager.GetActiveScene()))
             {
                 if (_mainMenuViewController.childViewController == null &&
                    (Input.GetAxis("TriggerLeftHand") > 0.75f) &&
@@ -152,7 +153,7 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == MainScene)
+            if (isMenuScene(scene))
             {
                 _mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
                 var _menuMasterViewController = Resources.FindObjectsOfTypeAll<StandardLevelSelectionFlowCoordinator>().First();
@@ -191,7 +192,7 @@ namespace BeatSaberTweaks
 
             var clock24hr = subMenu2.AddBool("24hr Clock");
             clock24hr.GetValue += delegate { return Settings.Use24hrClock; };
-            clock24hr.SetValue += delegate (bool value) 
+            clock24hr.SetValue += delegate (bool value)
             {
                 Settings.Use24hrClock = value;
                 InGameClock.UpdateClock();
@@ -227,15 +228,15 @@ namespace BeatSaberTweaks
             var removeBombs = subMenu3.AddBool("Remove Bombs");
             removeBombs.GetValue += delegate { return Settings.RemoveBombs; };
             removeBombs.SetValue += delegate (bool value) { Settings.RemoveBombs = value; };
-            
-            //CopySwitchSettingsController<OverrideJumpSpeedSettingsController>("Override Note Speed", tweaks3);
-            //CopyListSettingsController<NoteJumpSpeedSettingsController>("Note Speed", tweaks3);
 
-            //if (CameraPlusInstalled)
-            //{
-            //    var tweaks4 = SettingsUI.CreateSubMenu("Camera Plus");
-            //    SettingsUI.AddToggleSetting<CameraPlusThirdPersonSettingsController>("Third Person Camera", tweaks4);
-            //}
+            var overrideNoteSpeed = subMenu3.AddBool("Override Note Speed");
+            overrideNoteSpeed.GetValue += delegate { return Settings.OverrideJumpSpeed; };
+            overrideNoteSpeed.SetValue += delegate (bool value) { Settings.OverrideJumpSpeed = value; };
+
+            var noteSpeed = subMenu3.AddList("Note Speed", noteSpeeds());
+            noteSpeed.GetValue += delegate { return Settings.NoteJumpSpeed; };
+            noteSpeed.SetValue += delegate (float value) { Settings.NoteJumpSpeed = value; };
+            noteSpeed.FormatValue += delegate (float value) { return string.Format("{0:0}", value); };
 
             if (HiddenNotesInstalled)
             {
@@ -249,6 +250,19 @@ namespace BeatSaberTweaks
             float startValue = 0.0f;
             float step = 0.1f;
             var numberOfElements = 11;
+            var values = new float[numberOfElements];
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = startValue + step * i;
+            }
+            return values;
+        }
+
+        private float[] noteSpeeds()
+        {
+            float startValue = 5f;
+            float step = 1f;
+            var numberOfElements = 16;
             var values = new float[numberOfElements];
             for (int i = 0; i < values.Length; i++)
             {
@@ -289,8 +303,8 @@ namespace BeatSaberTweaks
             var _menuMasterViewController = Resources.FindObjectsOfTypeAll<StandardLevelSelectionFlowCoordinator>().First();
             var warning = ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(_menuMasterViewController , "_simpleDialogPromptViewController");
             warning.gameObject.SetActive(false);
-            warning.Init("Plugin warning", warningText, "YES", "NO");
             warning.didFinishEvent += Warning_didFinishEvent;
+            warning.Init("Plugin warning", warningText, "YES", "NO");
 
             yield return new WaitForSeconds(0.1f);
 

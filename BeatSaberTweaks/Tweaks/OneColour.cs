@@ -36,7 +36,7 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == TweakManager.MainScene)
+            if (TweakManager.isMenuScene(scene))
             {
                 if (model == null)
                 {
@@ -45,7 +45,7 @@ namespace BeatSaberTweaks
                 }
                 model.controllersRumbleEnabled = rumble;
             }
-            if (scene.buildIndex == TweakManager.GameScene && Settings.OneColour &&  TweakManager.IsPartyMode())
+            if (TweakManager.isGameScene(scene) && Settings.OneColour &&  TweakManager.IsPartyMode())
             {
                 PlayerController _playerController = FindObjectOfType<PlayerController>();
                 Saber left = _playerController.leftSaber;

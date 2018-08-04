@@ -32,7 +32,7 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (Settings.MoveScore && scene.buildIndex == TweakManager.GameScene)
+            if (Settings.MoveScore && TweakManager.isGameScene(scene))
             {
                 var scorePanel = Resources.FindObjectsOfTypeAll<ScoreUIController>().FirstOrDefault();
                 scorePanel.transform.position = Settings.ScorePosition;

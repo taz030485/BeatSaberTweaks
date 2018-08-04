@@ -52,20 +52,19 @@ namespace BeatSaberTweaks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (scene.buildIndex == TweakManager.GameScene)
+            if (TweakManager.isGameScene(scene))
             {
-                bool pooled = false;
                 if (noteCutSoundEffect == null)
                 {
                     var noteCutSoundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
                     noteCutSoundEffect = ReflectionUtil.GetPrivateField<NoteCutSoundEffect>(noteCutSoundEffectManager, "_noteCutSoundEffectPrefab");
-                    pooled = true;
                 }
 
                 if (normalVolume == 0)
                 {
                     normalVolume = ReflectionUtil.GetPrivateField<float>(noteCutSoundEffect, "_goodCutVolume");
                     normalMissVolume = ReflectionUtil.GetPrivateField<float>(noteCutSoundEffect, "_badCutVolume");
+                    //Console.WriteLine(normalVolume + " " + normalMissVolume);
                 }
 
                 float newGoodVolume = normalVolume * Settings.NoteHitVolume;
@@ -73,17 +72,11 @@ namespace BeatSaberTweaks
                 ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_goodCutVolume", newGoodVolume);
                 ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_badCutVolume", newBadVolume);
 
-                if (pooled)
+                var pool = Resources.FindObjectsOfTypeAll<NoteCutSoundEffect>();
+                foreach (var effect in pool)
                 {
-                    var pool = Resources.FindObjectsOfTypeAll<NoteCutSoundEffect>();
-                    foreach (var effect in pool)
-                    {
-                        if (effect.name.Contains("Clone"))
-                        {
-                            ReflectionUtil.SetPrivateField(effect, "_goodCutVolume", newGoodVolume);
-                            ReflectionUtil.SetPrivateField(effect, "_badCutVolume", newBadVolume);
-                        }
-                    }
+                    ReflectionUtil.SetPrivateField(effect, "_goodCutVolume", newGoodVolume);
+                    ReflectionUtil.SetPrivateField(effect, "_badCutVolume", newBadVolume);
                 }
             }
         }
