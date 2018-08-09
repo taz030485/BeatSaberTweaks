@@ -27,9 +27,6 @@ namespace BeatSaberTweaks
 
         static MainGameSceneSetupData _mainGameSceneSetupData = null;
 
-        bool SettingsUIInstalled = false;
-        bool HiddenNotesInstalled = false;
-
         float carTime = 0;
 
         public static void OnLoad()
@@ -57,35 +54,6 @@ namespace BeatSaberTweaks
                 DontDestroyOnLoad(gameObject);
 
                 Console.WriteLine("Tweak Manager started.");
-
-                string[] oldPlugins = new string[] 
-                {
-                    "In Game Time",
-                    "Move Energy Bar",
-                    "Note Hit Volume",
-                    "Beat Saber Score Mover"
-                };
-
-                foreach (var plugin in IllusionInjector.PluginManager.Plugins)
-                {
-                    if (oldPlugins.Contains(plugin.Name))
-                    {
-                        warningPlugins.Add(plugin.Name);
-                        Console.WriteLine("WARNING:" + plugin.Name + " is not needed anymore. Please remove it. BeatSaberTweaks has replaced it.");
-                    }
-
-                    if (plugin.Name == "Hidden Notes")
-                    {
-                        HiddenNotesInstalled = true;
-                    }
-
-#if NewUI
-                    if (plugin.Name == "BeatSaberUI")
-                    {
-                        SettingsUIInstalled = true;
-                    }
-#endif
-                }
 
                 MoveEnergyBar.OnLoad(transform);
                 ScoreMover.OnLoad(transform);
@@ -163,14 +131,8 @@ namespace BeatSaberTweaks
                 {
                     StartCoroutine(LoadWarning());
                 }
-#if NewUI
-                if (SettingsUIInstalled)
-                {
-                    CreateUI();
-                }
-#else
+
                 CreateUI();
-#endif
             }
         }
 
@@ -238,11 +200,11 @@ namespace BeatSaberTweaks
             noteSpeed.SetValue += delegate (float value) { Settings.NoteJumpSpeed = value; };
             noteSpeed.FormatValue += delegate (float value) { return string.Format("{0:0}", value); };
 
-            if (HiddenNotesInstalled)
-            {
-                var tweaks5 = SettingsUI.CreateSubMenu("Hidden Notes");
-                tweaks5.AddToggleSetting<HiddenNotesSettingsController>("Hidden Notes");
-            }
+            //if (HiddenNotesInstalled)
+            //{
+            //    var tweaks5 = SettingsUI.CreateSubMenu("Hidden Notes");
+            //    tweaks5.AddToggleSetting<HiddenNotesSettingsController>("Hidden Notes");
+            //}
         }
 
         private float[] volumeValues()
@@ -271,18 +233,21 @@ namespace BeatSaberTweaks
             return values;
         }
 
-        public static void LogComponents(Transform t, string prefix)
+        public static void LogComponents(Transform t, bool includeScipts = false, string prefix = "")
         {
             Console.WriteLine(prefix + ">" + t.name);
 
-            foreach (var comp in t.GetComponents<MonoBehaviour>())
+            if (includeScipts)
             {
-                Console.WriteLine(prefix + "-->" + comp.GetType());
+                foreach (var comp in t.GetComponents<MonoBehaviour>())
+                {
+                    Console.WriteLine(prefix + "|<-" + comp.GetType());
+                }
             }
 
             foreach (Transform child in t)
             {
-                LogComponents(child, prefix + "=");
+                LogComponents(child, includeScipts, prefix + "|");
             }
         }
 

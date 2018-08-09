@@ -22,6 +22,7 @@ namespace BeatSaberTweaks
             _init = true;
 
             Settings.Load();
+            SettingsUI.OnLoad();
             TweakManager.OnLoad();
         }
 

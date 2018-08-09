@@ -20,6 +20,9 @@ namespace BeatSaberTweaks
         {
             if (Instance == null)
             {
+
+                
+
                 Instance = this;
                 SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
                 DontDestroyOnLoad(gameObject);

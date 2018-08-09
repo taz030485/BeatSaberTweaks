@@ -27,9 +27,10 @@ The following options are changed by editing Tweaks.cfg
 - Score Position  
   
 # Changes  
-3.3  
+3.3.0  
 - Updated for Beat Saber 0.11.2  
 - Re-enabled Note Speed override  
+- Added Page Buttons to Settings UI  
   
 3.2.6  
 - Removed speed change option (Use updated Practice Plugin)  

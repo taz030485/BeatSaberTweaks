@@ -37,17 +37,6 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BeatSaberUI">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Hidden_Notes">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins Unused\Hidden_Notes.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="IllusionInjector">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionInjector.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="IllusionPlugin">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionPlugin.dll</HintPath>
       <Private>False</Private>
@@ -99,6 +88,7 @@
     <Compile Include="Utilites\ConInput.cs" />
     <Compile Include="Utilites\Ryder.Lightweight.cs" />
     <Compile Include="Utilites\SettingsUI.cs" />
+    <Compile Include="Utilites\TableViewHelper.cs" />
     <Compile Include="ViewControllers\HiddenNotesSettingsController.cs" />
     <Compile Include="Tweaks\InGameClock.cs" />
     <Compile Include="Tweaks\MoveEnergyBar.cs" />

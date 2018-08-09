@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using Hidden_Notes;
+//using Hidden_Notes;
 
 namespace BeatSaberTweaks
 {
@@ -11,12 +11,13 @@ namespace BeatSaberTweaks
     {
         protected override bool GetInitValue()
         {
-            return Hidden_Notes.Plugin.Config.Enabled;
+            //return Hidden_Notes.Plugin.Config.Enabled;
+            return false;
         }
 
         protected override void ApplyValue(bool value)
         {
-            Hidden_Notes.Plugin.Config.Enabled = value;
+            //Hidden_Notes.Plugin.Config.Enabled = value;
         }
 
         protected override string TextForValue(bool value)
