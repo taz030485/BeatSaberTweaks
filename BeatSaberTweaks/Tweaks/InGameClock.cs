@@ -49,9 +49,32 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (TweakManager.isMenuScene(scene) && ClockCanvas == null)
+            if (SettingsUI.isMenuScene(scene) && ClockCanvas == null)
             {
-                StartCoroutine(GrabCanvas());
+                ClockCanvas = new GameObject();
+                DontDestroyOnLoad(ClockCanvas);
+                ClockCanvas.AddComponent<Canvas>();
+
+                ClockCanvas.name = "Clock Canvas";
+                ClockCanvas.transform.position = timePos;
+                ClockCanvas.transform.rotation = timeRot;
+                ClockCanvas.transform.localScale = new Vector3(0.02f, 0.02f, 1.0f);
+
+                var textGO = new GameObject();
+                textGO.transform.SetParent(ClockCanvas.transform);
+                textGO.transform.localPosition = Vector3.zero;
+                textGO.transform.localRotation = Quaternion.identity;
+                textGO.transform.localScale = Vector3.one;
+
+                text = textGO.AddComponent<TextMeshProUGUI>();
+                text.name = "Clock Text";
+                text.alignment = TextAlignmentOptions.Center;
+                text.fontSize = timeSize;
+                text.text = "";
+
+                UpdateClock();
+
+                ClockCanvas.SetActive(Settings.ShowClock);
             }
         }
 
@@ -82,74 +105,6 @@ namespace BeatSaberTweaks
                 time = DateTime.Now.ToString("h:mm tt");
             }
             text.text = time;
-        }
-
-        private IEnumerator GrabCanvas()
-        {
-            yield return new WaitForSeconds(0.5f);
-
-            GameObject rightscreen = null;
-            foreach (var go in Resources.FindObjectsOfTypeAll<Transform>())
-            {
-                if (go.name.Contains("RightScreen"))
-                {
-                    rightscreen = go.gameObject;
-                }
-            }
-
-            if (rightscreen != null)
-            {
-                rightscreen.SetActive(false);
-                ClockCanvas = Object.Instantiate(rightscreen.gameObject, transform);
-                DontDestroyOnLoad(ClockCanvas);
-                ClockCanvas.SetActive(false);
-                rightscreen.SetActive(true);
-
-                ClockCanvas.name = "Clock Canvas";
-                ClockCanvas.transform.position = timePos;
-                ClockCanvas.transform.rotation = timeRot;
-
-                foreach (Transform child in ClockCanvas.transform)
-                {
-                    child.name = "Holder";
-
-                    DestroyImmediate(child.GetComponent<AutoRaycaster>());
-                    DestroyImmediate(child.GetComponent<ReleaseInfoViewController>());
-                    DestroyImmediate(child.GetComponent<VRGraphicRaycaster>());
-                    DestroyImmediate(child.GetComponent<VRGraphicRaycaster>());
-                    DestroyImmediate(child.GetComponent<Canvas>());
-
-                    DestroyImmediate(child.Find("Title").gameObject);
-                    DestroyImmediate(child.Find("BuildInfoText").gameObject);
-
-                    text = child.Find("NewText").GetComponent<TextMeshProUGUI>();
-                    text.name = "Clock Text";
-                    text.alignment = TextAlignmentOptions.Center;
-                    text.fontSize = timeSize;
-
-                    var extra = child.Find("SettingsButton(Clone)");
-                    if (extra != null)
-                    {
-                        DestroyImmediate(extra.gameObject);
-                    }
-                }
-
-                DestroyImmediate(ClockCanvas.GetComponent<VRUIScreen>());
-                DestroyImmediate(ClockCanvas.GetComponent<CanvasScaler>());
-                DestroyImmediate(ClockCanvas.GetComponent<RectMask2D>());
-                DestroyImmediate(ClockCanvas.GetComponent<Image>());
-                DestroyImmediate(ClockCanvas.GetComponent<AutoRaycaster>());
-                DestroyImmediate(ClockCanvas.GetComponent<VRGraphicRaycaster>());
-                DestroyImmediate(ClockCanvas.GetComponent<VRGraphicRaycaster>());
-
-                yield return null;
-
-                if (text != null)
-                {
-                    UpdateClock();
-                }
-                ClockCanvas.SetActive(Settings.ShowClock);
-            }
         }
     }
 }

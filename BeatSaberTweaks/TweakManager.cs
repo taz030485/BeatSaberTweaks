@@ -35,22 +35,13 @@ namespace BeatSaberTweaks
             new GameObject("Tweak Manager").AddComponent<TweakManager>();
         }
 
-        public static bool isMenuScene(Scene scene)
-        {
-            return (scene.name == "Menu");
-        }
-
-        public static bool isGameScene(Scene scene)
-        {
-            return (scene.name == "StandardLevel");
-        }
-
         public void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
                 SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
+                SceneManager.sceneLoaded += SceneManager_sceneLoaded;
                 DontDestroyOnLoad(gameObject);
 
                 Console.WriteLine("Tweak Manager started.");
@@ -69,9 +60,14 @@ namespace BeatSaberTweaks
             }
         }
 
+        private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+        {
+            //Console.WriteLine("Loaded: " + arg0.name);
+        }
+
         public void Update()
         {
-            if (isMenuScene(SceneManager.GetActiveScene()))
+            if (SettingsUI.isMenuScene(SceneManager.GetActiveScene()))
             {
                 if (_mainMenuViewController.childViewController == null &&
                    (Input.GetAxis("TriggerLeftHand") > 0.75f) &&
@@ -121,7 +117,8 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (isMenuScene(scene))
+            //Console.WriteLine("Active: " + scene.name);
+            if (SettingsUI.isMenuScene(scene))
             {
                 _mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
                 var _menuMasterViewController = Resources.FindObjectsOfTypeAll<StandardLevelSelectionFlowCoordinator>().First();
@@ -302,11 +299,11 @@ namespace BeatSaberTweaks
             }
             if (ok)
             {
-                Console.WriteLine("OK");
+                //Console.WriteLine("OK");
             }
             else
             {
-                Console.WriteLine("NO");
+                //Console.WriteLine("NO");
             }
             viewController.DismissModalViewController(null, false);
         }

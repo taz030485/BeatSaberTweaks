@@ -14,10 +14,12 @@ namespace BeatSaberTweaks
     public class NoteHitVolume : MonoBehaviour
     {
         public static NoteHitVolume Instance;
-        private static NoteCutSoundEffect noteCutSoundEffect;
 
         static float normalVolume = 0;
         static float normalMissVolume = 0;
+
+        const string goodCutString = "_goodCutVolume";
+        const string badCutString = "_badCutVolume";
 
         public static void OnLoad(Transform parent)
         {
@@ -39,45 +41,33 @@ namespace BeatSaberTweaks
             }
         }
 
-        public static void UpdateVolumes()
+        private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (noteCutSoundEffect != null)
+            if (SettingsUI.isGameScene(scene))
             {
-                float newGoodVolume = normalVolume * Settings.NoteHitVolume;
-                float newBadVolume = normalMissVolume * Settings.NoteMissVolume;
-                ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_goodCutVolume", newGoodVolume);
-                ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_badCutVolume", newBadVolume);
+                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
             }
         }
 
-        private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
+        private void LoadingDidFinishEvent()
         {
-            if (TweakManager.isGameScene(scene))
+            try
             {
-                if (noteCutSoundEffect == null)
-                {
-                    var noteCutSoundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
-                    noteCutSoundEffect = ReflectionUtil.GetPrivateField<NoteCutSoundEffect>(noteCutSoundEffectManager, "_noteCutSoundEffectPrefab");
-                }
-
-                if (normalVolume == 0)
-                {
-                    normalVolume = ReflectionUtil.GetPrivateField<float>(noteCutSoundEffect, "_goodCutVolume");
-                    normalMissVolume = ReflectionUtil.GetPrivateField<float>(noteCutSoundEffect, "_badCutVolume");
-                    //Console.WriteLine(normalVolume + " " + normalMissVolume);
-                }
-
-                float newGoodVolume = normalVolume * Settings.NoteHitVolume;
-                float newBadVolume = normalMissVolume * Settings.NoteMissVolume;
-                ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_goodCutVolume", newGoodVolume);
-                ReflectionUtil.SetPrivateField(noteCutSoundEffect, "_badCutVolume", newBadVolume);
-
                 var pool = Resources.FindObjectsOfTypeAll<NoteCutSoundEffect>();
                 foreach (var effect in pool)
                 {
-                    ReflectionUtil.SetPrivateField(effect, "_goodCutVolume", newGoodVolume);
-                    ReflectionUtil.SetPrivateField(effect, "_badCutVolume", newBadVolume);
+                    if (normalVolume == 0)
+                    {
+                        normalVolume = ReflectionUtil.GetPrivateField<float>(effect, goodCutString);
+                        normalMissVolume = ReflectionUtil.GetPrivateField<float>(effect, badCutString);
+                    }
+                    ReflectionUtil.SetPrivateField(effect, goodCutString, normalVolume * Settings.NoteHitVolume);
+                    ReflectionUtil.SetPrivateField(effect, badCutString, normalMissVolume * Settings.NoteMissVolume);
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     }

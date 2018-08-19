@@ -195,7 +195,8 @@ namespace BeatSaberTweaks
 
         public static bool isGameScene(Scene scene)
         {
-            return (scene.name == "StandardLevel");
+            //return scene.name.Contains("Environment");
+            return (scene.name == "StandardLevelLoader");
         }
 
         public void Awake()

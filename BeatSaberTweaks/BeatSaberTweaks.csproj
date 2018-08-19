@@ -87,6 +87,7 @@
     <Compile Include="Tweaks\ScoreMover.cs" />
     <Compile Include="Utilites\ConInput.cs" />
     <Compile Include="Utilites\Ryder.Lightweight.cs" />
+    <Compile Include="Utilites\SceneEvents.cs" />
     <Compile Include="Utilites\SettingsUI.cs" />
     <Compile Include="Utilites\TableViewHelper.cs" />
     <Compile Include="ViewControllers\HiddenNotesSettingsController.cs" />

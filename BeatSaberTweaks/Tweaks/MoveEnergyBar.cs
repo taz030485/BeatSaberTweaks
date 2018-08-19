@@ -32,13 +32,18 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (Settings.MoveEnergyBar && TweakManager.isGameScene(scene))
+            if (Settings.MoveEnergyBar && SettingsUI.isGameScene(scene))
             {
-                var energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().FirstOrDefault();
-                var pos = energyPanel.transform.position;
-                pos.y = Settings.EnergyBarHeight;
-                energyPanel.transform.position = pos;
+                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
             }
+        }
+
+        private void LoadingDidFinishEvent()
+        {
+            var energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().FirstOrDefault();
+            var pos = energyPanel.transform.position;
+            pos.y = Settings.EnergyBarHeight;
+            energyPanel.transform.position = pos;
         }
     }
 }

@@ -46,14 +46,35 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (TweakManager.isGameScene(scene))
+            if (SettingsUI.isGameScene(scene))
             {
+                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
+            }
+        }
+
+        private void LoadingDidFinishEvent()
+        {
+            try
+            { 
                 if (Settings.OverrideJumpSpeed)
                 {
-                    var beatmapObjectSpawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
-                    beatmapObjectSpawnController.SetPrivateField("_noteJumpMovementSpeed", Settings.NoteJumpSpeed);
-                    beatmapObjectSpawnController.AdjustForBeatsPerMinute();
+                    var _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
+                    if (_mainGameSceneSetupData == null) return;
+                    var _currentLevelPlaying = _mainGameSceneSetupData.difficultyLevel;
+
+                    if (_currentLevelPlaying.noteJumpMovementSpeed < 0)
+                    {
+                        _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", -Settings.NoteJumpSpeed);
+                    }
+                    else
+                    {
+                        _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", Settings.NoteJumpSpeed);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
 

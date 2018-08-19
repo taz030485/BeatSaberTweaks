@@ -20,9 +20,6 @@ namespace BeatSaberTweaks
         {
             if (Instance == null)
             {
-
-                
-
                 Instance = this;
                 SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
                 DontDestroyOnLoad(gameObject);
@@ -35,13 +32,18 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (Settings.MoveScore && TweakManager.isGameScene(scene))
+            if (Settings.MoveScore && SettingsUI.isGameScene(scene))
             {
-                var scorePanel = Resources.FindObjectsOfTypeAll<ScoreUIController>().FirstOrDefault();
-                scorePanel.transform.position = Settings.ScorePosition;
-                scorePanel.transform.rotation = Quaternion.identity;
-                scorePanel.transform.localScale *= Settings.ScoreSize;
+                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
             }
+        }
+
+        private void LoadingDidFinishEvent()
+        {
+            var scorePanel = Resources.FindObjectsOfTypeAll<ScoreUIController>().FirstOrDefault();
+            scorePanel.transform.position = Settings.ScorePosition;
+            scorePanel.transform.rotation = Quaternion.identity;
+            scorePanel.transform.localScale *= Settings.ScoreSize;
         }
     }
 }

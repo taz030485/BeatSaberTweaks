@@ -36,23 +36,31 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (TweakManager.isMenuScene(scene))
+            //if (SettingsUI.isMenuScene(scene))
+            //    {
+            //        if (model == null)
+            //        {
+            //            model = Resources.FindObjectsOfTypeAll<MainSettingsModel>().FirstOrDefault();
+            //            rumble = model.controllersRumbleEnabled;
+            //        }
+            //        model.controllersRumbleEnabled = rumble;
+            //    }
+            if (SettingsUI.isGameScene(scene) && Settings.OneColour && TweakManager.IsPartyMode())
             {
-                if (model == null)
-                {
-                    model = Resources.FindObjectsOfTypeAll<MainSettingsModel>().FirstOrDefault();
-                    rumble = model.controllersRumbleEnabled;
-                }
-                model.controllersRumbleEnabled = rumble;
+                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
             }
-            if (TweakManager.isGameScene(scene) && Settings.OneColour &&  TweakManager.IsPartyMode())
+        }
+
+        private void LoadingDidFinishEvent()
+        {
+            try
             {
                 PlayerController _playerController = FindObjectOfType<PlayerController>();
                 Saber left = _playerController.leftSaber;
                 Saber right = _playerController.rightSaber;
 
-                rumble = model.controllersRumbleEnabled;
-                model.controllersRumbleEnabled = false;
+                //rumble = model.controllersRumbleEnabled;
+                //model.controllersRumbleEnabled = false;
 
                 if (left != null && right != null)
                 {
@@ -66,6 +74,10 @@ namespace BeatSaberTweaks
                     //var type = ReflectionUtil.GetPrivateField<SaberTypeObject>(right, "_saberType");
                     //ReflectionUtil.SetPrivateField(component, "_saberType", type);
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
             }
         }
     } 
