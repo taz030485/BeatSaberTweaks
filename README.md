@@ -27,6 +27,9 @@ The following options are changed by editing Tweaks.cfg
 - Score Position  
   
 # Changes  
+3.3.1  
+- Fixed a major bug  
+
 3.3.0  
 - Updated for Beat Saber 0.11.2  
 - Re-enabled Note Speed override  

@@ -48,34 +48,35 @@ namespace BeatSaberTweaks
         {
             if (SettingsUI.isGameScene(scene))
             {
-                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
+                if (TweakManager.IsPartyMode() && Settings.OverrideJumpSpeed)
+                {
+                    SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
+                }
             }
         }
 
         private void LoadingDidFinishEvent()
         {
-            try
-            { 
-                if (Settings.OverrideJumpSpeed)
-                {
-                    var _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
-                    if (_mainGameSceneSetupData == null) return;
-                    var _currentLevelPlaying = _mainGameSceneSetupData.difficultyLevel;
+            StartCoroutine(SetNJS());
+        }
 
-                    if (_currentLevelPlaying.noteJumpMovementSpeed < 0)
-                    {
-                        _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", -Settings.NoteJumpSpeed);
-                    }
-                    else
-                    {
-                        _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", Settings.NoteJumpSpeed);
-                    }
-                }
-            }
-            catch (Exception e)
+        IEnumerator SetNJS()
+        {
+            var _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
+            var _currentLevelPlaying = _mainGameSceneSetupData.difficultyLevel;
+
+            var ONJS = _currentLevelPlaying.GetPrivateField<float>("_noteJumpMovementSpeed");
+
+            if (_currentLevelPlaying.noteJumpMovementSpeed < 0)
             {
-                Console.WriteLine(e);
+                _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", -Settings.NoteJumpSpeed);
             }
+            else
+            {
+                _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", Settings.NoteJumpSpeed);
+            }
+            yield return new WaitForSeconds(0.5f);
+            _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", ONJS);
         }
 
         static bool ShouldApplyModifers()
