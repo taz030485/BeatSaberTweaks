@@ -36,18 +36,29 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            //if (SettingsUI.isMenuScene(scene))
-            //    {
-            //        if (model == null)
-            //        {
-            //            model = Resources.FindObjectsOfTypeAll<MainSettingsModel>().FirstOrDefault();
-            //            rumble = model.controllersRumbleEnabled;
-            //        }
-            //        model.controllersRumbleEnabled = rumble;
-            //    }
-            if (SettingsUI.isGameScene(scene) && Settings.OneColour && TweakManager.IsPartyMode())
+            try
             {
-                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
+                //if (SettingsUI.isMenuScene(scene))
+                //    {
+                //        if (model == null)
+                //        {
+                //            model = Resources.FindObjectsOfTypeAll<MainSettingsModel>().FirstOrDefault();
+                //            rumble = model.controllersRumbleEnabled;
+                //        }
+                //        model.controllersRumbleEnabled = rumble;
+                //    }
+                if (SettingsUI.isGameScene(scene) && Settings.OneColour && TweakManager.IsPartyMode())
+                {
+                    var loader = SceneEvents.GetSceneLoader();
+                    if (loader != null)
+                    {
+                        loader.loadingDidFinishEvent += LoadingDidFinishEvent;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Tweaks (OneColour) done fucked up: " + e);
             }
         }
 

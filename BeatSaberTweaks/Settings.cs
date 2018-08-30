@@ -100,25 +100,13 @@ namespace BeatSaberTweaks
 
         public static void Load()
         {
-            // I'm a dumbass and spelled the filename wrong
-            string oldPath = Path.Combine(Environment.CurrentDirectory, "Tweask.cfg");
-            if (File.Exists(oldPath))
-            {
-                string dataAsJson = File.ReadAllText(oldPath);
-                instance = JsonUtility.FromJson<Settings>(dataAsJson);
-                File.Delete(oldPath);
-                return;
-            }
+            instance = new Settings();
 
             string filePath = SettingsPath();
             if (File.Exists(filePath))
             {
                 string dataAsJson = File.ReadAllText(filePath);
-                instance = JsonUtility.FromJson<Settings>(dataAsJson);
-            }
-            else
-            {
-                instance = new Settings();
+                JsonUtility.FromJsonOverwrite(dataAsJson, instance);
             }
         }
 

@@ -215,16 +215,23 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (isMenuScene(scene))
+            try
             {
-                SetupUI();
+                if (isMenuScene(scene))
+                {
+                    SetupUI();
 
-                //var testSub = CreateSubMenu("Test 1");
-                //var testSub2 = CreateSubMenu("Test 2");
-                //var testSub3 = CreateSubMenu("Test 3");
-                //var testSub4 = CreateSubMenu("Test 4");
-                //var testSub5 = CreateSubMenu("Test 5");
-                //var testSub6 = CreateSubMenu("Test 6");
+                    //var testSub = CreateSubMenu("Test 1");
+                    //var testSub2 = CreateSubMenu("Test 2");
+                    //var testSub3 = CreateSubMenu("Test 3");
+                    //var testSub4 = CreateSubMenu("Test 4");
+                    //var testSub5 = CreateSubMenu("Test 5");
+                    //var testSub6 = CreateSubMenu("Test 6");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("SettingsUI done fucked up: " + e);
             }
         }
 

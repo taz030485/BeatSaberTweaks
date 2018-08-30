@@ -23,8 +23,6 @@ namespace BeatSaberTweaks
         MainMenuViewController _mainMenuViewController = null;
         SimpleDialogPromptViewController prompt = null;
 
-        List<string> warningPlugins = new List<string>();
-
         static MainGameSceneSetupData _mainGameSceneSetupData = null;
 
         float carTime = 0;
@@ -117,19 +115,20 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            //Console.WriteLine("Active: " + scene.name);
-            if (SettingsUI.isMenuScene(scene))
+            try
             {
-                _mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
-                var _menuMasterViewController = Resources.FindObjectsOfTypeAll<StandardLevelSelectionFlowCoordinator>().First();
-                prompt = ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(_menuMasterViewController, "_simpleDialogPromptViewController");
-
-                if (warningPlugins.Count > 0)
+                //Console.WriteLine("Active: " + scene.name);
+                if (SettingsUI.isMenuScene(scene))
                 {
-                    StartCoroutine(LoadWarning());
-                }
+                    _mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
+                    var _menuMasterViewController = Resources.FindObjectsOfTypeAll<StandardLevelSelectionFlowCoordinator>().First();
+                    prompt = ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(_menuMasterViewController, "_simpleDialogPromptViewController");
 
-                CreateUI();
+                    CreateUI();
+                }
+            }catch (Exception e)
+            {
+                Console.WriteLine("Tweaks (Manager) done fucked up: " + e);
             }
         }
 
@@ -247,7 +246,7 @@ namespace BeatSaberTweaks
                 LogComponents(child, includeScipts, prefix + "|");
             }
         }
-
+        /*
         IEnumerator LoadWarning()
         {
             string warningText = "The folling plugins are obsolete:\n";
@@ -289,6 +288,7 @@ namespace BeatSaberTweaks
                 Application.Quit();
             }
         }
+        */
 
         private void Prompt_didFinishEvent(SimpleDialogPromptViewController viewController, bool ok)
         {

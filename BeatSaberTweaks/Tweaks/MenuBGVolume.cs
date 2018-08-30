@@ -50,18 +50,25 @@ namespace BeatSaberTweaks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (SettingsUI.isMenuScene(scene))
+            try
             {
-                player = Resources.FindObjectsOfTypeAll<SongPreviewPlayer>().FirstOrDefault();
-                if (normalVolume == 0)
+                if (SettingsUI.isMenuScene(scene))
                 {
-                    normalVolume = ReflectionUtil.GetPrivateField<float>(player, "_ambientVolumeScale");
+                    player = Resources.FindObjectsOfTypeAll<SongPreviewPlayer>().FirstOrDefault();
+                    if (normalVolume == 0)
+                    {
+                        normalVolume = ReflectionUtil.GetPrivateField<float>(player, "_ambientVolumeScale");
+                    }
+                    UpdateBGVolume();
                 }
-                UpdateBGVolume();
+                else
+                {
+                    player = null;
+                }
             }
-            else
+            catch (Exception e)
             {
-                player = null;
+                Console.WriteLine("Tweaks (MenuMusic) done fucked up: " + e);
             }
         }
     }

@@ -46,12 +46,23 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (SettingsUI.isGameScene(scene))
+            try
             {
-                if (TweakManager.IsPartyMode() && Settings.OverrideJumpSpeed)
+                if (SettingsUI.isGameScene(scene))
                 {
-                    SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
+                    if (TweakManager.IsPartyMode() && Settings.OverrideJumpSpeed)
+                    {
+                        var loader = SceneEvents.GetSceneLoader();
+                        if (loader != null)
+                        {
+                            loader.loadingDidFinishEvent += LoadingDidFinishEvent;
+                        }
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Tweaks (SongDataModifer) done fucked up: " + e);
             }
         }
 

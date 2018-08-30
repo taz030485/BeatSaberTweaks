@@ -49,32 +49,39 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (SettingsUI.isMenuScene(scene) && ClockCanvas == null)
+            try
             {
-                ClockCanvas = new GameObject();
-                DontDestroyOnLoad(ClockCanvas);
-                ClockCanvas.AddComponent<Canvas>();
+                if (SettingsUI.isMenuScene(scene) && ClockCanvas == null)
+                {
+                    ClockCanvas = new GameObject();
+                    DontDestroyOnLoad(ClockCanvas);
+                    ClockCanvas.AddComponent<Canvas>();
 
-                ClockCanvas.name = "Clock Canvas";
-                ClockCanvas.transform.position = timePos;
-                ClockCanvas.transform.rotation = timeRot;
-                ClockCanvas.transform.localScale = new Vector3(0.02f, 0.02f, 1.0f);
+                    ClockCanvas.name = "Clock Canvas";
+                    ClockCanvas.transform.position = timePos;
+                    ClockCanvas.transform.rotation = timeRot;
+                    ClockCanvas.transform.localScale = new Vector3(0.02f, 0.02f, 1.0f);
 
-                var textGO = new GameObject();
-                textGO.transform.SetParent(ClockCanvas.transform);
-                textGO.transform.localPosition = Vector3.zero;
-                textGO.transform.localRotation = Quaternion.identity;
-                textGO.transform.localScale = Vector3.one;
+                    var textGO = new GameObject();
+                    textGO.transform.SetParent(ClockCanvas.transform);
+                    textGO.transform.localPosition = Vector3.zero;
+                    textGO.transform.localRotation = Quaternion.identity;
+                    textGO.transform.localScale = Vector3.one;
 
-                text = textGO.AddComponent<TextMeshProUGUI>();
-                text.name = "Clock Text";
-                text.alignment = TextAlignmentOptions.Center;
-                text.fontSize = timeSize;
-                text.text = "";
+                    text = textGO.AddComponent<TextMeshProUGUI>();
+                    text.name = "Clock Text";
+                    text.alignment = TextAlignmentOptions.Center;
+                    text.fontSize = timeSize;
+                    text.text = "";
 
-                UpdateClock();
+                    UpdateClock();
 
-                ClockCanvas.SetActive(Settings.ShowClock);
+                    ClockCanvas.SetActive(Settings.ShowClock);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Tweaks (Clock) done fucked up: " + e);
             }
         }
 

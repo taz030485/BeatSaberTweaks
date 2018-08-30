@@ -32,9 +32,20 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (Settings.MoveScore && SettingsUI.isGameScene(scene))
+            try
             {
-                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
+                if (Settings.MoveScore && SettingsUI.isGameScene(scene))
+                {
+                    var loader = SceneEvents.GetSceneLoader();
+                    if (loader != null)
+                    {
+                        loader.loadingDidFinishEvent += LoadingDidFinishEvent;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Tweaks (MoveScore) done fucked up: " + e);
             }
         }
 

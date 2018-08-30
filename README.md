@@ -27,6 +27,9 @@ The following options are changed by editing Tweaks.cfg
 - Score Position  
   
 # Changes  
+3.3.2  
+- Fixed settings loading bug  
+
 3.3.1  
 - Fixed a major bug  
 

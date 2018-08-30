@@ -43,9 +43,20 @@ namespace BeatSaberTweaks
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if (SettingsUI.isGameScene(scene))
+            try
             {
-                SceneEvents.GetSceneLoader().loadingDidFinishEvent += LoadingDidFinishEvent;
+                if (SettingsUI.isGameScene(scene))
+                {
+                    var loader = SceneEvents.GetSceneLoader();
+                    if (loader != null)
+                    {
+                        loader.loadingDidFinishEvent += LoadingDidFinishEvent;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Tweaks (NoteVolume) done fucked up: " + e);
             }
         }
 

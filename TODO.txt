@@ -1,3 +1,5 @@
 Add one saber option to one colour in tweaks
 Add healterh warning screen skip
 Controller virbation is being weird
+Option to hide UI elements (Combo, score, etc)
+Hide UI elements (combo, score, etc)
