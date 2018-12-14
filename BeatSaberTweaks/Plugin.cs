@@ -9,12 +9,21 @@ namespace BeatSaberTweaks
     {
         public string Name => "Beat Saber Tweaks";
 #if NewUI
-        public string Version => "3.4";
+        public string Version => "4.0";
 #else
         public string Version => "3.3.2";
 #endif
 
         private bool _init = false;
+
+        private static bool debug = true;
+
+        public enum LogLevel
+        {
+            DebugOnly = 0,
+            Info = 1,
+            Error = 2
+        }
 
         public void OnApplicationStart()
         {
@@ -22,7 +31,7 @@ namespace BeatSaberTweaks
             _init = true;
 
             Settings.Load();
-            SettingsUI.OnLoad();
+            //SettingsUI.OnLoad();
             TweakManager.OnLoad();
         }
 
@@ -45,6 +54,11 @@ namespace BeatSaberTweaks
 
         public void OnFixedUpdate()
         {
+        }
+
+        public static void Log(string input, Plugin.LogLevel logLvl)
+        {
+            if (logLvl >= LogLevel.Info || debug) Console.WriteLine("[! ! ! ! Beat Saber Tweaks ! ! ! !]: " + input);
         }
     }
 }

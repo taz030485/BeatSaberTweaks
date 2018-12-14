@@ -1,36 +1,43 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
-using VRUI;
-using VRUIControls;
-using TMPro;
-using IllusionPlugin;
 
+
+
+// This class doesn't work.
+// Cool idea though
 namespace BeatSaberTweaks
 {
-    static class SceneEvents
+    public class SceneEvents : MonoBehaviour
     {
-        static AsyncScenesLoader loader = null;
-        public static AsyncScenesLoader GetSceneLoader()
+        private bool loaded = false;
+
+        public delegate void MyFunction();
+
+        public void WaitThenRunFunction(MyFunction functionToRun)
         {
-            if (SceneManager.GetActiveScene().name == "StandardLevelLoader")
+            StartCoroutine(WaitForLoad(functionToRun));
+        }
+
+        private IEnumerator WaitForLoad(MyFunction functionToRun)
+        {
+            while (!loaded)
             {
-                if (loader == null)
+                var resultsViewController = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
+
+                if (resultsViewController == null)
                 {
-                    loader = Resources.FindObjectsOfTypeAll<AsyncScenesLoader>().FirstOrDefault();
-                    if (loader != null)
-                    {
-                        //Console.WriteLine("Found Scene Loader");
-                    }
+                    Plugin.Log("resultsViewController is null!", Plugin.LogLevel.DebugOnly);
+                    yield return new WaitForSeconds(0.01f);
                 }
-                return loader;
+                else
+                {
+                    Plugin.Log("Loaded the energy bar mover", Plugin.LogLevel.DebugOnly);
+                    loaded = true;
+                }
             }
-            return null;
+            functionToRun();
         }
     }
 }

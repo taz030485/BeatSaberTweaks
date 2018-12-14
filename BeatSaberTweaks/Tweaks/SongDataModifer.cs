@@ -32,9 +32,13 @@ namespace BeatSaberTweaks
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
 
+                /*
+                 * TODO
+                 * Figure out how any of this works
                 MethodInfo original = typeof(BeatDataTransformHelper).GetMethod("CreateTransformedBeatmapData", BindingFlags.Public | BindingFlags.Static);
                 MethodInfo modified = typeof(SongDataModifer).GetMethod(nameof(CreateTransformedBeatmapData), BindingFlags.Public | BindingFlags.Static);
                 songDataRedirect = new Redirection(original, modified, true);
+                */
 
                 SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             }
@@ -48,15 +52,11 @@ namespace BeatSaberTweaks
         {
             try
             {
-                if (SettingsUI.isGameScene(scene))
+                if (SceneUtils.isGameScene(scene))
                 {
                     if (TweakManager.IsPartyMode() && Settings.OverrideJumpSpeed)
                     {
-                        var loader = SceneEvents.GetSceneLoader();
-                        if (loader != null)
-                        {
-                            loader.loadingDidFinishEvent += LoadingDidFinishEvent;
-                        }
+                        StartCoroutine(WaitForLoad());
                     }
                 }
             }
@@ -66,6 +66,27 @@ namespace BeatSaberTweaks
             }
         }
 
+        private IEnumerator WaitForLoad()
+        {
+            bool loaded = false;
+            while (!loaded)
+            {
+                var resultsViewController = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
+
+                if (resultsViewController == null)
+                {
+                    Plugin.Log("resultsViewController is null!", Plugin.LogLevel.DebugOnly);
+                    yield return new WaitForSeconds(0.01f);
+                }
+                else
+                {
+                    Plugin.Log("Found resultsViewController!", Plugin.LogLevel.DebugOnly);
+                    loaded = true;
+                }
+            }
+            LoadingDidFinishEvent();
+        }
+
         private void LoadingDidFinishEvent()
         {
             StartCoroutine(SetNJS());
@@ -73,6 +94,8 @@ namespace BeatSaberTweaks
 
         IEnumerator SetNJS()
         {
+            /*
+             * TODO
             var _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
             var _currentLevelPlaying = _mainGameSceneSetupData.difficultyLevel;
 
@@ -86,8 +109,10 @@ namespace BeatSaberTweaks
             {
                 _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", Settings.NoteJumpSpeed);
             }
+            */
             yield return new WaitForSeconds(0.5f);
-            _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", ONJS);
+            // TODO
+            //_currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", ONJS);
         }
 
         static bool ShouldApplyModifers()
@@ -95,6 +120,8 @@ namespace BeatSaberTweaks
             return TweakManager.IsPartyMode() && (Settings.RemoveBombs || Settings.OneColour || Settings.NoArrows);
         }
 
+        /*
+         * TODO
         public static BeatmapData CreateTransformedBeatmapData(BeatmapData beatmapData, GameplayOptions gameplayOptions, GameplayMode gameplayMode)
         {
             BeatmapData newData = (BeatmapData)songDataRedirect.InvokeOriginal(null, beatmapData, gameplayOptions, gameplayMode);
@@ -107,6 +134,7 @@ namespace BeatSaberTweaks
 
             return newData;
         }
+        */
 
         public static BeatmapData ApplyModifiers(BeatmapData beatmapData)
         {

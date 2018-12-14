@@ -27,6 +27,7 @@ namespace BeatSaberTweaks
         public static void OnLoad(Transform parent)
         {
             if (Instance != null) return;
+            Plugin.Log("Creating InGameClock.", Plugin.LogLevel.DebugOnly);
             new GameObject("In Game Time").AddComponent<InGameClock>().transform.parent = parent;
         }
 
@@ -34,6 +35,7 @@ namespace BeatSaberTweaks
         {
             if (Instance == null)
             {
+                Plugin.Log("InGameClock awake.", Plugin.LogLevel.DebugOnly);
                 Instance = this;
                 SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
                 DontDestroyOnLoad(gameObject);
@@ -49,10 +51,12 @@ namespace BeatSaberTweaks
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+            Plugin.Log("InGameClock SceneManagerOnActiveSceneChanged: " + arg0.name + " " + scene.name, Plugin.LogLevel.DebugOnly);
             try
             {
-                if (SettingsUI.isMenuScene(scene) && ClockCanvas == null)
+                if (SceneUtils.isMenuScene(scene) && ClockCanvas == null)
                 {
+                    Plugin.Log("Creating the clock object... ", Plugin.LogLevel.DebugOnly);
                     ClockCanvas = new GameObject();
                     DontDestroyOnLoad(ClockCanvas);
                     ClockCanvas.AddComponent<Canvas>();
@@ -81,7 +85,7 @@ namespace BeatSaberTweaks
             }
             catch (Exception e)
             {
-                Console.WriteLine("Tweaks (Clock) done fucked up: " + e);
+                Plugin.Log("InGameClock error: " + e, Plugin.LogLevel.DebugOnly);
             }
         }
 
@@ -102,6 +106,7 @@ namespace BeatSaberTweaks
 
         public static void UpdateClock()
         {
+            Plugin.Log("InGameClock UpdateClock function called.", Plugin.LogLevel.DebugOnly);
             string time;
             if (Settings.Use24hrClock)
             {

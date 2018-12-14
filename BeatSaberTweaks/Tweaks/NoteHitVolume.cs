@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
+using System.Collections;
 
 namespace BeatSaberTweaks
 {
@@ -45,19 +46,36 @@ namespace BeatSaberTweaks
         {
             try
             {
-                if (SettingsUI.isGameScene(scene))
+                if (SceneUtils.isGameScene(scene))
                 {
-                    var loader = SceneEvents.GetSceneLoader();
-                    if (loader != null)
-                    {
-                        loader.loadingDidFinishEvent += LoadingDidFinishEvent;
-                    }
+                    StartCoroutine(WaitForLoad());
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine("Tweaks (NoteVolume) done fucked up: " + e);
             }
+        }
+
+        private IEnumerator WaitForLoad()
+        {
+            bool loaded = false;
+            while (!loaded)
+            {
+                var resultsViewController = Resources.FindObjectsOfTypeAll<ResultsViewController>().FirstOrDefault();
+
+                if (resultsViewController == null)
+                {
+                    Plugin.Log("resultsViewController is null!", Plugin.LogLevel.DebugOnly);
+                    yield return new WaitForSeconds(0.01f);
+                }
+                else
+                {
+                    Plugin.Log("Found resultsViewController!", Plugin.LogLevel.DebugOnly);
+                    loaded = true;
+                }
+            }
+            LoadingDidFinishEvent();
         }
 
         private void LoadingDidFinishEvent()
