@@ -54,10 +54,13 @@ namespace BeatSaberTweaks
             {
                 if (SceneUtils.isGameScene(scene))
                 {
-                    if (TweakManager.IsPartyMode() && Settings.OverrideJumpSpeed)
+                    if (TweakManager.IsPartyMode() && (Settings.OverrideJumpSpeed || Settings.OneColour || Settings.NoArrows || Settings.RemoveBombs))
                     {
+                        Plugin.Log("Party Mode Active", Plugin.LogLevel.Info);
                         StartCoroutine(WaitForLoad());
                     }
+                    else
+                        Plugin.Log("Party Mode Not Active", Plugin.LogLevel.Info);
                 }
             }
             catch (Exception e)
@@ -90,14 +93,14 @@ namespace BeatSaberTweaks
         private void LoadingDidFinishEvent()
         {
             StartCoroutine(SetNJS());
+            StartCoroutine(CreateTransformedBeatmapData(Plugin._gameplayMode));
         }
 
         IEnumerator SetNJS()
         {
-            /*
-             * TODO
-            var _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
-            var _currentLevelPlaying = _mainGameSceneSetupData.difficultyLevel;
+   
+            var _levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().FirstOrDefault();
+            var _currentLevelPlaying = _levelData.difficultyBeatmap;
 
             var ONJS = _currentLevelPlaying.GetPrivateField<float>("_noteJumpMovementSpeed");
 
@@ -109,10 +112,10 @@ namespace BeatSaberTweaks
             {
                 _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", Settings.NoteJumpSpeed);
             }
-            */
+            
             yield return new WaitForSeconds(0.5f);
-            // TODO
-            //_currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", ONJS);
+           
+            _currentLevelPlaying.SetPrivateField("_noteJumpMovementSpeed", ONJS);
         }
 
         static bool ShouldApplyModifers()
@@ -120,97 +123,66 @@ namespace BeatSaberTweaks
             return TweakManager.IsPartyMode() && (Settings.RemoveBombs || Settings.OneColour || Settings.NoArrows);
         }
 
-        /*
-         * TODO
-        public static BeatmapData CreateTransformedBeatmapData(BeatmapData beatmapData, GameplayOptions gameplayOptions, GameplayMode gameplayMode)
+        
+        
+        public static IEnumerator CreateTransformedBeatmapData(string gameplayMode)
         {
-            BeatmapData newData = (BeatmapData)songDataRedirect.InvokeOriginal(null, beatmapData, gameplayOptions, gameplayMode);
-
+            Plugin.Log("Waiting to change beatmap", Plugin.LogLevel.Info);
+            yield return new WaitForSeconds(0.2f);
             if (ShouldApplyModifers())
             {
+                Plugin.Log("Attempting to change beatmap", Plugin.LogLevel.Info);
                 //Console.WriteLine("Applying BeatMap modifiers.");
-                newData = ApplyModifiers(newData);
+                ApplyModifiers();
             }
 
-            return newData;
+
         }
-        */
+        
 
-        public static BeatmapData ApplyModifiers(BeatmapData beatmapData)
+        public static void ApplyModifiers()
         {
-            BeatmapLineData[] beatmapLinesData = beatmapData.beatmapLinesData;
-            int[] array = new int[beatmapLinesData.Length];
-            for (int i = 0; i < array.Length; i++)
+            Plugin.Log("Modifying BeatMap Data", Plugin.LogLevel.Info);
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetPrivateField<BeatmapDataModel>("_beatmapDataModel");
+            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectData[] objects;
+            NoteData noteData;
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                array[i] = 0;
-            }
-            int num = 0;
-            for (int j = 0; j < beatmapLinesData.Length; j++)
-            {
-                num += beatmapLinesData[j].beatmapObjectsData.Length;
-            }
-            List<BeatmapObjectData> list = new List<BeatmapObjectData>(num);
-            bool flag;
-            do
-            {
-                flag = false;
-                float num2 = 999999f;
-                int num3 = 0;
-                for (int k = 0; k < beatmapLinesData.Length; k++)
+                objects = line.beatmapObjectsData;
+                foreach (BeatmapObjectData beatmapObject in objects)
                 {
-                    BeatmapObjectData[] beatmapObjectsData = beatmapLinesData[k].beatmapObjectsData;
-                    int num4 = array[k];
-                    if (num4 < beatmapObjectsData.Length)
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
                     {
-                        flag = true;
-                        BeatmapObjectData beatmapObjectData = beatmapObjectsData[num4];
-                        float time = beatmapObjectData.time;
-                        if (time < num2)
+                        noteData = beatmapObject as NoteData;
+
+                        if (noteData != null)
                         {
-                            num2 = time;
-                            num3 = k;
+                            if (Settings.NoArrows)
+                            {
+                                Plugin.Log("Changing Note", Plugin.LogLevel.Info);
+                                noteData.SetNoteToAnyCutDirection();
+                            }
+
+                            if (Settings.OneColour && noteData.noteType == NoteType.NoteA)
+                            {
+                                noteData.SwitchNoteType();
+                            }
+                            if(noteData.noteType == NoteType.Bomb && Settings.RemoveBombs)
+                            {
+                                //Admittedly ghetto way of removing bombs but should be amusing at the very least
+                                noteData.MirrorLineIndex(10);
+                            }
                         }
                     }
-                }
-                if (flag)
-                {
-                    var note = beatmapLinesData[num3].beatmapObjectsData[array[num3]].GetCopy();
-                    if (!(Settings.RemoveBombs && IsBomb(note)))
-                    {
-                        list.Add(beatmapLinesData[num3].beatmapObjectsData[array[num3]].GetCopy());
-                    }
-                    array[num3]++;
+                    
+
+
+
+
                 }
             }
-            while (flag);
-            ModifyObjects(list, beatmapData.beatmapLinesData.Length);
-            int[] array2 = new int[beatmapLinesData.Length];
-            for (int l = 0; l < list.Count; l++)
-            {
-                BeatmapObjectData beatmapObjectData2 = list[l];
-                array2[beatmapObjectData2.lineIndex]++;
-            }
-            BeatmapLineData[] array3 = new BeatmapLineData[beatmapLinesData.Length];
-            for (int m = 0; m < beatmapLinesData.Length; m++)
-            {
-                array3[m] = new BeatmapLineData();
-                array3[m].beatmapObjectsData = new BeatmapObjectData[array2[m]];
-                array[m] = 0;
-            }
-            for (int n = 0; n < list.Count; n++)
-            {
-                BeatmapObjectData beatmapObjectData3 = list[n];
-                int lineIndex = beatmapObjectData3.lineIndex;
-                array3[lineIndex].beatmapObjectsData[array[lineIndex]] = beatmapObjectData3;
-                array[lineIndex]++;
-            }
-            BeatmapEventData[] array4 = new BeatmapEventData[beatmapData.beatmapEventData.Length];
-            for (int num5 = 0; num5 < beatmapData.beatmapEventData.Length; num5++)
-            {
-                BeatmapEventData beatmapEventData = beatmapData.beatmapEventData[num5];
-                array4[num5] = beatmapEventData.GetCopy();
-            }
-            return new BeatmapData(array3, array4);
             //return new SongData(songData.BeatsPerMinute, Settings.OverrideJumpSpeed ? Settings.NoteJumpSpeed : songData.NoteJumpSpeed, array3, array4);
         }
 
