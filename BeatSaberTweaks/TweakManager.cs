@@ -56,6 +56,7 @@ namespace BeatSaberTweaks
 
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
+            if(arg0.name == "Menu")
             CreateUI();
         }
 
