@@ -56,7 +56,8 @@ namespace BeatSaberTweaks
 
         private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
         {
-            //Console.WriteLine("Loaded: " + arg0.name);
+            if(arg0.name == "Menu")
+            CreateUI();
         }
 
         public void Update()
@@ -105,23 +106,13 @@ namespace BeatSaberTweaks
 
         public static bool IsPartyMode()
         {
-            return false;
-
-            /*
-             * TODO
-             * Fix partymode 
-            if (_mainGameSceneSetupData == null)
-            {
-                _mainGameSceneSetupData = Resources.FindObjectsOfTypeAll<MainGameSceneSetupData>().FirstOrDefault();
-            }
-
-            if (_mainGameSceneSetupData == null)
-            {
+            Plugin.Log(Plugin.party.ToString(), Plugin.LogLevel.Info);
+            if (Plugin.party)
+                return true;
+            else
                 return false;
-            }
 
-            return _mainGameSceneSetupData.gameplayMode == GameplayMode.PartyStandard;
-            */
+
         }
 
         public void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
@@ -135,8 +126,6 @@ namespace BeatSaberTweaks
                     _mainMenuViewController = Resources.FindObjectsOfTypeAll<MainMenuViewController>().First();
                     //var _menuMasterViewController = Resources.FindObjectsOfTypeAll<StandardLevelSelectionFlowCoordinator>().First();
                     //prompt = ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(_menuMasterViewController, "_simpleDialogPromptViewController");
-
-                    CreateUI();
                 }
                 else
                 {

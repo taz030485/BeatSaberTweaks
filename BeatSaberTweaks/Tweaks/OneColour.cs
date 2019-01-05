@@ -16,6 +16,7 @@ namespace BeatSaberTweaks
 
         public static void OnLoad(Transform parent)
         {
+            Plugin.Log("One Color Load", Plugin.LogLevel.Info);
             if (Instance != null) return;
             new GameObject("One Colour").AddComponent<OneColour>().transform.parent = parent;
         }
@@ -38,15 +39,15 @@ namespace BeatSaberTweaks
         {
             try
             {
-                //if (SettingsUI.isMenuScene(scene))
-                //    {
-                //        if (model == null)
-                //        {
-                //            model = Resources.FindObjectsOfTypeAll<MainSettingsModel>().FirstOrDefault();
-                //            rumble = model.controllersRumbleEnabled;
-                //        }
-                //        model.controllersRumbleEnabled = rumble;
-                //    }
+                if (scene.name == "Menu")
+                    {
+                        if (model == null)
+                        {
+                            model = Resources.FindObjectsOfTypeAll<MainSettingsModel>().FirstOrDefault();
+                            rumble = model.controllersRumbleEnabled;
+                        }
+                        model.controllersRumbleEnabled = rumble;
+                    }
                 if (SceneUtils.isGameScene(scene) && Settings.OneColour && TweakManager.IsPartyMode())
                 {
                     StartCoroutine(WaitForLoad());
@@ -76,6 +77,7 @@ namespace BeatSaberTweaks
                     loaded = true;
                 }
             }
+            yield return new WaitForSeconds(0.1f);
             LoadingDidFinishEvent();
         }
 
@@ -83,25 +85,14 @@ namespace BeatSaberTweaks
         {
             try
             {
-                PlayerController _playerController = FindObjectOfType<PlayerController>();
-                Saber left = _playerController.leftSaber;
-                Saber right = _playerController.rightSaber;
+                Plugin.Log("One Color Activation Attempt", Plugin.LogLevel.Info);
+                PlayerController _playerController = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
+                var leftSaberType = _playerController.leftSaber.GetPrivateField<SaberTypeObject>("_saberType");
+                leftSaberType.SetPrivateField("_saberType", Saber.SaberType.SaberB);
+                rumble = model.controllersRumbleEnabled;
+                model.controllersRumbleEnabled = false;
 
-                //rumble = model.controllersRumbleEnabled;
-                //model.controllersRumbleEnabled = false;
 
-                if (left != null && right != null)
-                {
-                    GameObject gameObject = Instantiate(right.gameObject);
-                    Saber component = gameObject.GetComponent<Saber>();
-                    gameObject.transform.parent = left.transform.parent;
-                    gameObject.transform.localPosition = Vector3.zero;
-                    gameObject.transform.localRotation = Quaternion.identity;
-                    left.gameObject.SetActive(false);
-                    ReflectionUtil.SetPrivateField(_playerController, "_leftSaber", component);
-                    //var type = ReflectionUtil.GetPrivateField<SaberTypeObject>(right, "_saberType");
-                    //ReflectionUtil.SetPrivateField(component, "_saberType", type);
-                }
             }
             catch (Exception e)
             {
