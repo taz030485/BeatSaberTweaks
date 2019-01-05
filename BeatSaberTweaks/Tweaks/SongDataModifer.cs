@@ -161,7 +161,6 @@ namespace BeatSaberTweaks
                         {
                             if (Settings.NoArrows)
                             {
-                                Plugin.Log("Changing Note", Plugin.LogLevel.Info);
                                 noteData.SetNoteToAnyCutDirection();
                             }
 
